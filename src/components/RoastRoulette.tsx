@@ -39,8 +39,12 @@ export default function RoastRoulette() {
     setIsReasonExpanded(false);
 
     const coffee = getRandomCoffee(lastPickedId || undefined);
-    setSelectedCoffee(coffee);
     setLastPickedId(coffee.id);
+
+    gsap.delayedCall(2.2, () => {
+      setSelectedCoffee(coffee);
+      setStage('reveal');
+    });
 
     // Tactile button animation
     if (triggerRef.current) {
@@ -75,10 +79,7 @@ export default function RoastRoulette() {
           duration: 2, 
           ease: "power4.out",
           onComplete: () => {
-             // 3 Rapid flashes on select
-             setTimeout(() => {
-                setStage('reveal');
-             }, 400);
+             // Complete empty to avoid Duplicate reveals
           }
         }
       );
@@ -146,31 +147,35 @@ export default function RoastRoulette() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
-                className="relative flex flex-col items-center"
+                className="flex flex-col items-center"
               >
-                {/* Orbital Beans container */}
-                <div ref={beansRef} className="absolute inset-0 w-[240px] h-[240px] flex items-center justify-center pointer-events-none">
-                  {[...Array(6)].map((_, i) => (
-                    <div 
-                      key={i} 
-                      className="orbit-bean absolute"
-                      style={{ 
-                        transform: `rotate(${i * 60}deg) translateY(-100px)` 
-                     }}
-                    >
-                      <div className="w-3 h-4 bg-[#3D2314] rounded-full shadow-sm"></div>
-                    </div>
-                  ))}
-                </div>
+                <div className="relative flex items-center justify-center w-[300px] h-[300px] mx-auto my-8">
+                  {/* Orbital Beans container */}
+                  <div ref={beansRef} className="absolute inset-0 w-full h-full flex items-center justify-center pointer-events-none">
+                    {[...Array(6)].map((_, i) => (
+                      <div 
+                        key={i} 
+                        className="orbit-bean absolute"
+                        style={{ 
+                          transform: `rotate(${i * 60}deg) translateY(-120px)` 
+                       }}
+                      >
+                        <div className="w-3 h-4 bg-[#3D2314] rounded-full shadow-sm"></div>
+                      </div>
+                    ))}
+                  </div>
 
-                <button 
-                  ref={triggerRef}
-                  onClick={handleSpin}
-                  className="group relative w-40 h-40 md:w-48 md:h-48 rounded-full bg-espresso border-[3px] border-caramel shadow-[0_0_20px_rgba(201,137,58,0.3)] flex flex-col items-center justify-center gap-1 transition-all hover:shadow-[0_0_30px_rgba(201,137,58,0.5)] cursor-pointer"
-                >
-                  <Dice5 className="w-10 h-10 text-caramel group-hover:rotate-45 transition-transform duration-300" />
-                  <span className="font-playfair text-xl font-bold text-cream">Spin</span>
-                </button>
+                  <div className="flex items-center justify-center w-full absolute pointer-events-auto">
+                    <button 
+                      ref={triggerRef}
+                      onClick={handleSpin}
+                      className="w-[200px] h-[200px] min-w-[200px] min-h-[200px] rounded-full flex flex-col items-center justify-center cursor-pointer bg-espresso border-[3px] border-caramel shadow-[0_0_20px_rgba(201,137,58,0.3)] gap-1 hover:shadow-[0_0_30px_rgba(201,137,58,0.5)] transition-all group"
+                    >
+                      <Dice5 className="w-10 h-10 text-caramel group-hover:rotate-45 transition-transform duration-300" />
+                      <span className="font-playfair text-xl font-bold text-cream">Spin</span>
+                    </button>
+                  </div>
+                </div>
 
                 <p className="text-xs text-charcoal/60 font-dm-sans mt-4">12 signature coffees. One is yours today.</p>
                 <p className="font-caveat text-sm text-charcoal/50 mt-1 italic">🗓️ New discoveries every Sunday. Come back and spin again.</p>
