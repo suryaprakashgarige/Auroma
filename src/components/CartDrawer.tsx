@@ -2,9 +2,11 @@
 import { useCartStore } from "@/store/useCartStore";
 import { X, Minus, Plus, ShoppingBag } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function CartDrawer() {
-  const { items, isOpen, toggleCart, removeItem, updateQuantity, cartTotal, addItem } = useCartStore();
+  const { items, isOpen, toggleCart, removeItem, updateQuantity, cartTotal, addItem, clearCart } = useCartStore();
+  const router = useRouter();
 
   if (!isOpen) return null;
 
@@ -123,7 +125,14 @@ export default function CartDrawer() {
               <span className="font-dm-sans text-charcoal">Subtotal</span>
               <span className="font-playfair font-bold text-xl text-espresso">${cartTotal().toFixed(2)}</span>
             </div>
-            <button className="w-full py-4 bg-caramel hover:bg-caramel/90 text-espresso font-bold rounded-full font-dm-sans transition-colors">
+            <button 
+              onClick={() => {
+                clearCart();
+                toggleCart();
+                router.push("/tracker");
+              }}
+              className="w-full py-4 bg-caramel hover:bg-caramel/90 text-espresso font-bold rounded-full font-dm-sans transition-colors cursor-pointer"
+            >
               Proceed to Checkout
             </button>
           </div>

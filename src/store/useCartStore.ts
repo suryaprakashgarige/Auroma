@@ -9,11 +9,13 @@ interface CartState {
   updateQuantity: (id: string, quantity: number) => void;
   toggleCart: () => void;
   cartTotal: () => number;
+  clearCart: () => void;
 }
 
 export const useCartStore = create<CartState>((set, get) => ({
   items: [],
   isOpen: false,
+  clearCart: () => set({ items: [] }),
   addItem: (item) => {
     set((state) => {
       const existingItem = state.items.find((i) => i.id === item.id);

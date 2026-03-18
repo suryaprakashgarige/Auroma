@@ -8,6 +8,8 @@ import { Sparkles, Dice5, ScanFace, Sliders } from "lucide-react";
 
 import Navbar from "@/components/Navbar";
 import CartDrawer from "@/components/CartDrawer";
+import AuthDrawer from "@/components/AuthDrawer";
+import StickyCart from "@/components/StickyCart";
 import HeroSection from "@/components/HeroSection";
 import OurCraft from "@/components/OurCraft";
 import Testimonials from "@/components/Testimonials";
@@ -35,6 +37,8 @@ export default function Home() {
     <main className="relative w-full bg-cream min-h-screen overflow-x-hidden">
       <Navbar onOpenQuiz={() => setIsQuizOpen(true)} />
       <CartDrawer />
+      <AuthDrawer />
+      <StickyCart />
 
       {/* 1. Hero Section */}
       <HeroSection onTakeQuiz={() => setIsQuizOpen(true)} />

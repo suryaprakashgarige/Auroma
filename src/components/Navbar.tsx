@@ -8,10 +8,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useCartStore } from "@/store/useCartStore";
+import { useUserStore } from "@/store/useUserStore";
+import { User } from "lucide-react";
 
 export default function Navbar({ onOpenQuiz }: { onOpenQuiz: () => void }) {
   const [isOpen, setIsOpen] = useState(false);
   const { items, toggleCart } = useCartStore();
+  const { toggleAuthDrawer } = useUserStore();
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
 
   useEffect(() => {
@@ -59,6 +62,14 @@ export default function Navbar({ onOpenQuiz }: { onOpenQuiz: () => void }) {
 
       {/* Actions */}
       <div className="hidden md:flex items-center gap-4">
+        {/* User Rewards Button */}
+        <button 
+          onClick={toggleAuthDrawer} 
+          className="p-2.5 bg-cream-dark border border-espresso/10 rounded-full hover:bg-cream-dark/90 transition shadow-sm cursor-pointer"
+        >
+          <User className="w-5 h-5 text-espresso" />
+        </button>
+
         {/* Cart Button */}
         <button 
           onClick={toggleCart} 
@@ -83,6 +94,13 @@ export default function Navbar({ onOpenQuiz }: { onOpenQuiz: () => void }) {
 
       {/* Mobile Actions (Menu Toggle & Cart) */}
       <div className="flex items-center gap-3 md:hidden">
+        <button 
+          onClick={toggleAuthDrawer} 
+          className="p-2 relative bg-cream-dark border border-espresso/10 rounded-full cursor-pointer"
+        >
+          <User className="w-4 h-4 text-espresso" />
+        </button>
+
         <button 
           onClick={toggleCart} 
           className="p-2 relative bg-cream-dark border border-espresso/10 rounded-full cursor-pointer"
