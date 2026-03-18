@@ -15,6 +15,8 @@ import { MoveRight, ShieldCheck, RefreshCw, Share2, Sparkles, AlertCircle } from
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { moodData, detectMood, getMostFrequentMood, MoodType } from "@/lib/moodLogic";
+import { useCartStore } from "@/store/useCartStore";
+import { menuItems } from "@/lib/mockData";
 
 // Dynamically handle face-api.js is tricky with types, we use it client-side.
 let faceapi: any;
@@ -505,12 +507,16 @@ export default function MoodBrewScan() {
 
             {/* CTA Actions */}
             <div className="w-full mt-6 space-y-3">
-              <a 
-                href="#build-your-ritual"
-                className="w-full py-3 bg-caramel hover:bg-caramel/90 text-espresso font-bold rounded-full font-['DM_Sans'] shadow-md text-sm transition-colors flex items-center justify-center gap-1"
+              <button 
+                onClick={() => {
+                  // Find a close match from our menu database based on the mood recommendation
+                  const recommendedItem = menuItems[0]; 
+                  useCartStore.getState().addItem(recommendedItem);
+                }}
+                className="w-full py-3 bg-caramel hover:bg-caramel/90 text-espresso font-bold rounded-full font-dm-sans shadow-md text-sm transition-colors flex items-center justify-center gap-2"
               >
-                Order This Coffee <MoveRight className="w-4 h-4" />
-              </a>
+                Add Match to Cart <MoveRight className="w-4 h-4" />
+              </button>
               <button 
                 onClick={() => {
                   const text = `Auroma scanned my mood as ${detectedMood} and matched me with ${moodData[detectedMood].drink.name} ☕ #MoodBrewScan`;

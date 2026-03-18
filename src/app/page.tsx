@@ -1,52 +1,31 @@
 "use client";
-
-import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
-import FeaturesSection from "@/components/FeaturesSection";
-import BuildYourRitual from "@/components/BuildYourRitual";
-import RoastRoulette from "@/components/RoastRoulette";
+import DigitalMenu from "@/components/DigitalMenu";
+import CartDrawer from "@/components/CartDrawer";
+import Footer from "@/components/Footer";
 import dynamic from "next/dynamic";
 
-const MoodBrewScan = dynamic(() => import("@/components/MoodBrewScan"), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full py-20 bg-cream flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-caramel border-t-transparent rounded-full animate-spin" />
-    </div>
-  )
-});
-import MenuTeaser from "@/components/MenuTeaser";
-import RecommendationFeed from "@/components/RecommendationFeed";
-import InstagramGallery from "@/components/InstagramGallery";
-
-import Footer from "@/components/Footer";
-import BrewBlueprintQuiz from "@/components/BrewBlueprintQuiz";
+const MoodBrewScan = dynamic(() => import("@/components/MoodBrewScan"), { ssr: false });
 
 export default function Home() {
-  const [isQuizOpen, setIsQuizOpen] = useState(false);
-
   return (
-    <main className="relative w-full">
-      <Navbar onOpenQuiz={() => setIsQuizOpen(true)} />
-      <HeroSection onOpenQuiz={() => setIsQuizOpen(true)} />
-      <FeaturesSection onOpenQuiz={() => setIsQuizOpen(true)} />
-      <BuildYourRitual />
-      <RoastRoulette />
-      <MoodBrewScan />
-      <RecommendationFeed />
-      <MenuTeaser />
-      <InstagramGallery />
+    <main className="relative w-full bg-cream min-h-screen">
+      <Navbar onOpenQuiz={() => {}} />
+      <CartDrawer />
+      
+      <HeroSection />
+      <DigitalMenu />
+
+      <section className="py-24 bg-espresso/5 border-y border-espresso/10">
+        <div className="max-w-4xl mx-auto px-6 mb-12 text-center">
+          <h2 className="text-4xl font-playfair font-bold text-espresso mb-4">Can't decide?</h2>
+          <p className="font-dm-sans text-charcoal/70">Let our AI read your mood and match you with the perfect brew. Find your match to unlock a 15% discount on your order.</p>
+        </div>
+        <MoodBrewScan />
+      </section>
 
       <Footer />
-
-
-
-      {/* Quiz Interactive Overlay */}
-      <BrewBlueprintQuiz 
-        isOpen={isQuizOpen} 
-        onClose={() => setIsQuizOpen(false)} 
-      />
     </main>
   );
 }
