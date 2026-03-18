@@ -39,5 +39,35 @@ export const menuItems: MenuItem[] = [
     category: "Pastries",
     imageUrl: "https://images.unsplash.com/photo-1530610476181-d83430b64dcb?q=80&w=1000&auto=format&fit=crop",
     dietaryTags: ["Vegetarian"],
+  },
+  {
+    id: "5",
+    name: "Caramel Macchiato",
+    description: "Layered espresso with steamed milk and a rich caramel drizzle topping.",
+    price: 5.25,
+    category: "Espresso Bar",
+    imageUrl: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?q=80&w=1000&auto=format&fit=crop",
+    dietaryTags: [],
+    roastLevel: "Medium"
+  },
+  {
+    id: "6",
+    name: "Cold Brew Vanilla",
+    description: "Our signature 24-hour steep cold brew infused with organic vanilla syrup.",
+    price: 5.00,
+    category: "Signatures",
+    imageUrl: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?q=80&w=1000&auto=format&fit=crop",
+    dietaryTags: ["Vegan", "Dairy-Free"],
+    roastLevel: "Medium"
+  },
+  {
+    id: "7",
+    name: "Matcha Espresso Fusion",
+    description: "A visually stunning layer of earthy matcha and cold milk with a float of espresso.",
+    price: 6.00,
+    category: "Signatures",
+    imageUrl: "https://images.unsplash.com/photo-1594631252845-29fc45898d41?q=80&w=1000&auto=format&fit=crop",
+    dietaryTags: ["Vegetarian"],
+    roastLevel: "Medium"
   }
 ];

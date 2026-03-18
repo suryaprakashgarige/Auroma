@@ -4,6 +4,8 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Check, Share2, RefreshCw } from "lucide-react";
 import { QUESTIONS, calculateResult, DrinkResult } from "@/lib/quizLogic";
+import { useCartStore } from "@/store/useCartStore";
+import { menuItems } from "@/lib/mockData";
 
 export default function BrewBlueprintQuiz({ 
   isOpen, 
@@ -13,6 +15,7 @@ export default function BrewBlueprintQuiz({
   onClose: () => void 
 }) {
   const [currentStep, setCurrentStep] = useState(0);
+  const { addItem } = useCartStore();
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [result, setResult] = useState<DrinkResult | null>(null);
   const [isCopied, setIsCopied] = useState(false);
@@ -169,12 +172,35 @@ export default function BrewBlueprintQuiz({
             </div>
 
             <div className="flex flex-col gap-3 w-full">
-              <button className="w-full py-3 bg-caramel hover:bg-caramel/90 text-espresso font-bold rounded-full font-dm-sans shadow-md">
-                Order This Coffee
+              <button 
+                onClick={() => {
+                  const mapping: Record<string, string> = {
+                    ethiopian: "2",
+                    espresso: "3",
+                    lavender: "1",
+                    macchiato: "5",
+                    coldbrew: "6",
+                    matcha: "7"
+                  };
+                  const itemId = mapping[result.id];
+                  const item = menuItems.find(i => i.id === itemId);
+                  if (item) {
+                    // Apply 10% discount to price & name label
+                    addItem({
+                      ...item,
+                      price: Number((item.price * 0.9).toFixed(2)),
+                      name: `${item.name} (Quiz Match)`
+                    });
+                    onClose();
+                  }
+                }}
+                className="w-full py-3 bg-caramel hover:bg-caramel/90 text-espresso font-bold rounded-full font-dm-sans shadow-md cursor-pointer"
+              >
+                Add to Order - 10% Off
               </button>
               <button 
                 onClick={shareResult}
-                className="w-full py-3 border border-espresso/20 hover:border-espresso text-espresso font-semibold rounded-full font-dm-sans flex items-center justify-center gap-2"
+                className="w-full py-3 border border-espresso/20 hover:border-espresso text-espresso font-semibold rounded-full font-dm-sans flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Share2 className="w-4 h-4" /> Share My Result
               </button>

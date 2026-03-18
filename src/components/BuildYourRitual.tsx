@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Coffee, Share2, Heart, Sparkles, Check, AlertCircle } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useCartStore } from "@/store/useCartStore";
 import { supabase } from "@/lib/supabase";
 import { 
   DRINK_NAMES, 
@@ -524,69 +525,29 @@ export default function BuildYourRitual() {
 
             </div>
 
-            {/* Order Form below Preview */}
-            <div className="w-full bg-cream border border-espresso/5 rounded-3xl p-6 shadow-xl flex flex-col text-espresso">
-              <span className="font-playfair font-bold text-lg mb-4 text-espresso">Your Details</span>
-              <div className="flex flex-col gap-4">
-                <div>
-                  <label className="font-dm-sans text-xs font-semibold text-charcoal/80">Your Name</label>
-                  <input 
-                    type="text" 
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full mt-1 border border-espresso/10 rounded-xl px-3 py-2 text-sm font-dm-sans focus:border-caramel outline-none bg-cream"
-                    placeholder="Grandmaster"
-                  />
-                  {formErrors.name && <p className="text-red-500 text-[10px] mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3"/> {formErrors.name}</p>}
-                </div>
-
-                <div>
-                  <label className="font-dm-sans text-xs font-semibold text-charcoal/80">Your Phone Number</label>
-                  <input 
-                    type="tel" 
-                    value={customerPhone}
-                    onChange={(e) => setCustomerPhone(e.target.value)}
-                    className="w-full mt-1 border border-espresso/10 rounded-xl px-3 py-2 text-sm font-dm-sans focus:border-caramel outline-none bg-cream"
-                    placeholder="+1 234 567 890"
-                  />
-                  <p className="font-caveat text-[10px] text-charcoal/60 mt-0.5">Only used if we need to clarify your order</p>
-                  {formErrors.phone && <p className="text-red-500 text-[10px] mt-1 flex items-center gap-1"><AlertCircle className="w-3 h-3"/> {formErrors.phone}</p>}
-                </div>
-
-                {orderStatus === 'success' ? (
-                  <motion.div 
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="p-4 bg-jade/10 border border-jade/30 rounded-2xl flex flex-col items-center text-center text-espresso"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-jade flex items-center justify-center text-cream mb-2 shadow-sm">
-                      <Check className="w-5 h-5" />
-                    </div>
-                    <span className="font-playfair font-bold text-base mb-1">Order placed! ☕</span>
-                    <p className="font-dm-sans text-xs text-charcoal/80 mb-1">{DRINK_NAMES[roast][milk]} is on its way.</p>
-                    <p className="font-caveat text-caramel text-md">Sit back. Your ritual is in good hands.</p>
-                  </motion.div>
-                ) : (
-                  <button 
-                    onClick={submitOrder}
-                    disabled={orderStatus === 'submitting'}
-                    className={`w-full py-3 bg-caramel text-espresso font-bold rounded-full font-dm-sans flex items-center justify-center gap-2 transition-all duration-300 shadow-[0_4px_10px_rgba(201,137,58,0.3)] hover:shadow-[0_4px_15px_rgba(201,137,58,0.5)] cursor-pointer disabled:opacity-70`}
-                  >
-                    {orderStatus === 'submitting' ? "Placing Order..." : "Place My Order →"}
-                  </button>
-                )}
-
-                {orderStatus === 'error' && (
-                  <p className="text-red-500 text-xs text-center mt-2 flex items-center justify-center gap-1 font-dm-sans">
-                    <AlertCircle className="w-4 h-4"/> Something went wrong. Try again?
-                  </p>
-                )}
-              </div>
+            {/* Add to Cart Action */}
+            <div className="w-full bg-cream border border-espresso/5 rounded-3xl p-6 shadow-xl flex flex-col text-espresso mt-4">
+              <button 
+                onClick={() => {
+                  useCartStore.getState().addItem({
+                    id: `ritual-${Date.now()}`,
+                    name: ritualName || `${DRINK_NAMES[roast][milk]}`,
+                    description: `${roast} roast, ${milk} milk, ${SWEETNESS_LABELS[sweetness]}, ${strength + (extraShot ? 1 : 0)} shots, ${temperature}, ${size}${syrup !== 'none' ? ` + ${syrup}` : ''}`,
+                    price: calculatePrice(),
+                    category: 'Signatures',
+                    imageUrl: 'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?q=80&w=600&auto=format&fit=crop',
+                    dietaryTags: [milk === 'oat' || milk === 'almond' ? 'Vegan' : 'Standard']
+                  });
+                  
+                  // Optional: success toast or reveal
+                }}
+                className="w-full py-3 bg-caramel hover:bg-caramel/90 text-espresso font-bold rounded-full font-dm-sans flex items-center justify-center gap-2 transition-all duration-300 shadow-[0_4px_10px_rgba(201,137,58,0.3)] hover:shadow-[0_4px_15px_rgba(201,137,58,0.5)] cursor-pointer"
+              >
+                Add Custom Ritual to Cart — ${calculatePrice().toFixed(2)}
+              </button>
             </div>
-
-          </div>
-
-        </div>
+          </div> {/* closes right column */}
+        </div> {/* closes flex row */}
 
         {/* Presets Row bottom */}
         <div className="mt-8 animate-in w-full text-center">

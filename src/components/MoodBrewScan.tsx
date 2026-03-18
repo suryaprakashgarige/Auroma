@@ -219,17 +219,17 @@ export default function MoodBrewScan() {
     <section 
       id="mood-brew-scan" 
       ref={sectionRef}
-      className="relative w-full py-20 bg-cream px-6 md:px-12 flex flex-col items-center overflow-hidden"
+      className="relative w-full py-24 bg-espresso px-6 md:px-12 flex flex-col items-center overflow-hidden"
     >
       {/* Section Header */}
       <div className="scan-header text-center mb-12 max-w-2xl transform">
         <span className="font-['Caveat'] text-2xl text-caramel italic">
           Your face knows what you need
         </span>
-        <h2 className="text-4xl md:text-6xl font-bold font-playfair text-espresso mt-2 mb-4 tracking-tight">
+        <h2 className="text-4xl md:text-6xl font-bold font-playfair text-cream mt-2 mb-4 tracking-tight">
           Mood Brew Scan
         </h2>
-        <p className="font-['DM_Sans'] text-charcoal/70 text-base leading-relaxed">
+        <p className="font-['DM_Sans'] text-cream/70 text-base leading-relaxed">
           We read your expression. We match your coffee. <br className="hidden md:inline" />
           Nothing is stored — ever.
         </p>
@@ -238,7 +238,7 @@ export default function MoodBrewScan() {
       {/* Main Container Card */}
       <div 
         ref={cardRef} 
-        className="w-full max-w-2xl bg-cream-dark rounded-3xl border border-espresso/5 shadow-xl p-8 md:p-12 relative"
+        className="w-full max-w-2xl bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 shadow-2xl p-8 md:p-12 relative text-cream"
       >
         {/* Stage 1: Consent & Intro */}
         {stage === 'consent' && (
@@ -252,11 +252,11 @@ export default function MoodBrewScan() {
               <span className="bobbing-emoji">😐</span>
             </div>
 
-            <h3 className="text-2xl md:text-3xl font-bold font-playfair text-espresso mb-4">
+            <h3 className="text-2xl md:text-3xl font-bold font-playfair text-cream mb-4">
               What&apos;s your face saying right now?
             </h3>
             
-            <p className="font-['DM_Sans'] text-charcoal/80 mb-8 max-w-md">
+            <p className="font-['DM_Sans'] text-cream/80 mb-8 max-w-md">
               Auroma&apos;s Mood Brew Scan reads your facial expression to match you with the perfect coffee for how you actually feel.
             </p>
 
@@ -339,7 +339,7 @@ export default function MoodBrewScan() {
 
             {/* Right: Scanning indicators */}
             <div className="flex-1 flex flex-col justify-center">
-              <h4 className="font-playfair font-bold text-xl text-espresso mb-4">
+              <h4 className="font-playfair font-bold text-xl text-cream mb-4">
                 Reading your expression...
               </h4>
               
@@ -352,15 +352,15 @@ export default function MoodBrewScan() {
 
                   return (
                     <div key={m} className="w-full">
-                      <div className="flex justify-between text-xs font-['DM_Sans'] text-charcoal/80 mb-1">
+                      <div className="flex justify-between text-xs font-['DM_Sans'] text-cream/80 mb-1">
                         <span className="flex items-center gap-1">
                           {moodData[m as MoodType].emoji} {m}
                         </span>
                         <span>{Math.round(score * 100)}%</span>
                       </div>
-                      <div className="w-full h-1.5 bg-cream rounded-full overflow-hidden">
+                      <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
                         <div 
-                          className={`h-full rounded-full transition-all duration-300 ${isDominant ? 'bg-caramel' : 'bg-charcoal/20'}`}
+                          className={`h-full rounded-full transition-all duration-300 ${isDominant ? 'bg-caramel' : 'bg-white/30'}`}
                           style={{ width: `${score * 100}%` }}
                         />
                       </div>
@@ -378,7 +378,7 @@ export default function MoodBrewScan() {
         {/* Stage 2B: Manual Mood Picker */}
         {stage === 'manual' && (
           <div>
-            <h3 className="text-2xl font-bold font-playfair text-espresso text-center mb-6">
+            <h3 className="text-2xl font-bold font-playfair text-cream text-center mb-6">
               How are you feeling right now?
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -388,11 +388,11 @@ export default function MoodBrewScan() {
                   <button
                     key={m}
                     onClick={() => handleManualMood(m)}
-                    className="flex flex-col items-center p-4 bg-cream rounded-xl border border-transparent hover:border-jade/30 hover:shadow-md transition-all cursor-pointer transform hover:-translate-y-1 group"
+                    className="flex flex-col items-center p-4 bg-white/5 rounded-xl border border-white/10 hover:border-caramel/30 hover:shadow-md transition-all cursor-pointer transform hover:-translate-y-1 group"
                   >
                     <span className="text-4xl mb-2 group-hover:scale-110 transition-transform">{data.emoji}</span>
-                    <span className="font-playfair font-bold text-espresso text-sm">{m}</span>
-                    <span className="font-['DM_Sans'] text-[10px] text-charcoal/60 mt-1 text-center leading-tight">
+                    <span className="font-playfair font-bold text-cream text-sm">{m}</span>
+                    <span className="font-['DM_Sans'] text-[10px] text-cream/60 mt-1 text-center leading-tight">
                       {m === 'Chill' && 'Relaxed, no rush'}
                       {m === 'Tense' && 'Stressed today'}
                       {m === 'Tired' && 'Need a fuel boost'}
@@ -422,7 +422,7 @@ export default function MoodBrewScan() {
               <div className="text-5xl mb-2 animate-bounce">
                 {moodData[detectedMood].emoji}
               </div>
-              <h3 className="text-2xl md:text-3xl font-bold font-playfair text-espresso">
+              <h3 className="text-2xl md:text-3xl font-bold font-playfair text-cream">
                 Your mood: <span className="text-caramel">{detectedMood}</span>
               </h3>
               <span className="font-['Caveat'] text-lg text-caramel italic mt-1">
@@ -431,15 +431,15 @@ export default function MoodBrewScan() {
             </div>
 
             {/* Recommendation Display */}
-            <div className="w-full bg-cream rounded-2xl p-6 md:p-8 border border-espresso/5 shadow-inner">
+            <div className="w-full bg-white/5 rounded-2xl p-6 md:p-8 border border-white/10 shadow-inner">
               <span className="font-['Caveat'] text-caramel text-base italic block text-center mb-1">
                 Auroma recommends
               </span>
-              <h4 className="text-2xl md:text-3xl font-black font-playfair text-espresso text-center mb-2 tracking-tight">
+              <h4 className="text-2xl md:text-3xl font-black font-playfair text-cream text-center mb-2 tracking-tight">
                 {moodData[detectedMood].drink.name}
               </h4>
               <div className="flex justify-center mb-6">
-                <span className="px-3 py-1 bg-caramel/20 text-espresso rounded-full text-xs font-dm-sans font-medium">
+                <span className="px-3 py-1 bg-caramel/20 text-cream rounded-full text-xs font-dm-sans font-medium">
                   {moodData[detectedMood].drink.origin}
                 </span>
               </div>
@@ -465,25 +465,25 @@ export default function MoodBrewScan() {
                 {/* Text attributes */}
                 <div className="space-y-4">
                   <div>
-                    <span className="text-xs font-bold text-espresso font-['DM_Sans'] block mb-1">
+                    <span className="text-xs font-bold text-cream font-['DM_Sans'] block mb-1">
                       Why this matches:
                     </span>
-                    <p className="font-['DM_Sans'] text-charcoal/80 text-xs leading-relaxed">
+                    <p className="font-['DM_Sans'] text-cream/80 text-xs leading-relaxed">
                       {moodData[detectedMood].drink.whyThisMatches}
                     </p>
                   </div>
 
                   <div className="flex flex-wrap gap-2">
                     {moodData[detectedMood].drink.tastingNotes.map((note) => (
-                      <span key={note} className="px-2.5 py-1 bg-cream-dark text-espresso font-medium rounded-full text-[10px]">
+                      <span key={note} className="px-2.5 py-1 bg-white/10 text-cream font-medium rounded-full text-[10px]">
                         {note}
                       </span>
                     ))}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-y-1 text-xs font-['DM_Sans'] text-charcoal/70">
-                    <div>Roast: <span className="font-bold text-espresso">{moodData[detectedMood].drink.roast}</span></div>
-                    <div>Milk: <span className="font-bold text-espresso">{moodData[detectedMood].drink.milk}</span></div>
+                  <div className="grid grid-cols-2 gap-y-1 text-xs font-['DM_Sans'] text-cream/70">
+                    <div>Roast: <span className="font-bold text-cream">{moodData[detectedMood].drink.roast}</span></div>
+                    <div>Milk: <span className="font-bold text-cream">{moodData[detectedMood].drink.milk}</span></div>
                     <div className="col-span-2">
                       Caffeine: {"☕".repeat(moodData[detectedMood].drink.strength === 'Single' ? 1 : moodData[detectedMood].drink.strength === 'Double' ? 2 : 3)}
                     </div>
@@ -492,14 +492,14 @@ export default function MoodBrewScan() {
               </div>
 
               {/* Expansion Science Accordion */}
-              <details className="mt-8 border-t border-espresso/5 pt-4 group">
-                <summary className="font-['DM_Sans'] text-xs font-semibold text-espresso flex items-center justify-between cursor-pointer list-none">
+              <details className="mt-8 border-t border-white/10 pt-4 group">
+                <summary className="font-['DM_Sans'] text-xs font-semibold text-cream flex items-center justify-between cursor-pointer list-none">
                   <span>The Science Behind It</span>
                   <div className="w-4 h-4 rounded-full border border-caramel flex items-center justify-center group-open:rotate-180 transition-transform">
                     &darr;
                   </div>
                 </summary>
-                <p className="mt-2 font-['DM_Sans'] text-xs text-charcoal/70 leading-relaxed pl-1">
+                <p className="mt-2 font-['DM_Sans'] text-xs text-cream/70 leading-relaxed pl-1">
                   {moodData[detectedMood].drink.science}
                 </p>
               </details>
@@ -509,11 +509,18 @@ export default function MoodBrewScan() {
             <div className="w-full mt-6 space-y-3">
               <button 
                 onClick={() => {
-                  // Find a close match from our menu database based on the mood recommendation
-                  const recommendedItem = menuItems[0]; 
-                  useCartStore.getState().addItem(recommendedItem);
+                  const data = moodData[detectedMood].drink;
+                  useCartStore.getState().addItem({
+                    id: `mood-${detectedMood.toLowerCase()}`,
+                    name: `${data.name} (Mood Match)`,
+                    description: data.whyThisMatches,
+                    price: 6.50,
+                    category: 'Signatures',
+                    imageUrl: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=600&auto=format&fit=crop',
+                    dietaryTags: data.tastingNotes
+                  });
                 }}
-                className="w-full py-3 bg-caramel hover:bg-caramel/90 text-espresso font-bold rounded-full font-dm-sans shadow-md text-sm transition-colors flex items-center justify-center gap-2"
+                className="w-full py-3 bg-caramel hover:bg-caramel/90 text-espresso font-bold rounded-full font-dm-sans shadow-md text-sm transition-all hover:shadow-[0_0_20px_rgba(201,137,58,0.4)] flex items-center justify-center gap-2 cursor-pointer"
               >
                 Add Match to Cart <MoveRight className="w-4 h-4" />
               </button>
@@ -521,9 +528,8 @@ export default function MoodBrewScan() {
                 onClick={() => {
                   const text = `Auroma scanned my mood as ${detectedMood} and matched me with ${moodData[detectedMood].drink.name} ☕ #MoodBrewScan`;
                   navigator.clipboard.writeText(text);
-                  alert("Experience match copied to clipboard!");
                 }}
-                className="w-full py-2.5 bg-transparent hover:bg-espresso/5 text-espresso font-semibold rounded-full font-['DM_Sans'] border2 border2-jade/40 text-xs transition-colors flex items-center justify-center gap-2"
+                className="w-full py-2.5 bg-transparent hover:bg-white/5 text-cream font-semibold rounded-full font-['DM_Sans'] border border-white/10 text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Share2 className="w-3.5 h-3.5" /> Share My Mood Match
               </button>

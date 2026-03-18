@@ -5,8 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Dice5, Share2, CornerUpRight, RefreshCw, AlertCircle, Check, Coffee } from "lucide-react";
 import gsap from "gsap";
 import { rouletteCoffees, getRandomCoffee } from "@/lib/rouletteLogic";
+import { useCartStore } from "@/store/useCartStore";
 
 export default function RoastRoulette() {
+  const { addItem } = useCartStore();
   const [stage, setStage] = useState<'idle' | 'spinning' | 'reveal'>('idle');
   const [selectedCoffee, setSelectedCoffee] = useState<typeof rouletteCoffees[0] | null>(null);
   const [lastPickedId, setLastPickedId] = useState<number | null>(null);
@@ -87,24 +89,36 @@ export default function RoastRoulette() {
     }
   };
 
-  const handleOrderThis = () => {
+  const handleAddToCart = () => {
     if (!selectedCoffee) return;
 
-    // Dispatch Custom Event to BuildYourRitual component
+    addItem({
+      id: `roulette-${selectedCoffee.id}`,
+      name: `${selectedCoffee.name} (Roulette Win)`,
+      description: selectedCoffee.originStory,
+      price: 6.00, // Roulette win price
+      category: 'Signatures',
+      imageUrl: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?q=80&w=600&auto=format&fit=crop',
+      dietaryTags: selectedCoffee.tastingNotes
+    });
+  };
+
+  const handleCustomizeWin = () => {
+    if (!selectedCoffee) return;
+
     const config = {
       roast: selectedCoffee.roast.toLowerCase().replace(' ', '_'),
       milk: selectedCoffee.milk.toLowerCase(),
-      sweetness: 1, // Default mapping
+      sweetness: 1, 
       strength: selectedCoffee.strength === 'Single' ? 1 : selectedCoffee.strength === 'Double' ? 2 : 3,
       temperature: selectedCoffee.temperature.toLowerCase(),
-      size: "M", // Default M
+      size: "M", 
       syrup: selectedCoffee.syrup.toLowerCase(),
       extra_shot: false
     };
 
     window.dispatchEvent(new CustomEvent('loadCoffeeRitual', { detail: config }));
 
-    // Scroll smoothly to item
     const element = document.getElementById('build-your-ritual');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -295,23 +309,23 @@ export default function RoastRoulette() {
                 {/* Actions bottom */}
                 <div className="flex flex-col gap-2 w-full mt-2">
                   <button 
-                    onClick={handleOrderThis}
-                    className="w-full py-2.5 bg-caramel text-espresso font-bold rounded-full font-dm-sans text-sm flex items-center justify-center gap-1.5 shadow-md hover:shadow-lg transition-all"
+                    onClick={handleAddToCart}
+                    className="w-full py-2.5 bg-caramel hover:bg-caramel/90 text-espresso font-bold rounded-full font-dm-sans text-sm flex items-center justify-center gap-1.5 shadow-md hover:shadow-lg transition-all cursor-pointer"
                   >
-                    Order This Coffee <CornerUpRight className="w-3.5 h-3.5" />
+                    Add to Cart <CornerUpRight className="w-3.5 h-3.5" />
                   </button>
                   <div className="flex gap-2 w-full">
                     <button 
-                      onClick={handleShare}
-                      className="flex-1 py-1.5 border border-jade text-jade rounded-full font-dm-sans text-xs flex items-center justify-center gap-1 cursor-pointer"
+                      onClick={handleCustomizeWin}
+                      className="flex-1 py-1.5 border border-espresso/20 hover:border-espresso text-espresso rounded-full font-dm-sans text-xs flex items-center justify-center gap-1 cursor-pointer"
                     >
-                      <Share2 className="w-3 h-3" /> Share
+                      Customize it
                     </button>
                     <button 
-                      onClick={resetSpin}
-                      className="flex-1 py-1.5 text-charcoal/60 hover:text-espresso font-dm-sans text-xs underline flex items-center justify-center gap-1 cursor-pointer"
+                      onClick={handleShare}
+                      className="flex-1 py-1.5 border border-espresso/20 hover:border-espresso text-espresso rounded-full font-dm-sans text-xs flex items-center justify-center gap-1 cursor-pointer"
                     >
-                      <RefreshCw className="w-3 h-3" /> Spin Again
+                      <Share2 className="w-3 h-3" /> Share
                     </button>
                   </div>
                 </div>
