@@ -23,6 +23,8 @@ export const metadata: Metadata = {
   description: "Four AI-powered ways to find your perfect cup. No guesswork. Just great coffee.",
 };
 
+import CursorGlow from "@/components/CursorGlow";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,6 +35,7 @@ export default function RootLayout({
       <body
         className={`${playfair.variable} ${dmSans.variable} ${caveat.variable} antialiased`}
       >
+        <CursorGlow />
         <LenisProvider>
           {children}
         </LenisProvider>

@@ -244,12 +244,16 @@ export default function RoastRoulette() {
 
                   {/* Right Details */}
                   <div className="flex flex-col items-start text-left gap-1.5">
-                    <div className="flex flex-wrap gap-1 mb-1">
-                      {selectedCoffee.tastingNotes.map(t => (
-                        <span key={t} className="text-[9px] font-bold fill-caramel font-dm-sans px-1.5 py-0.5 bg-caramel/20 border border-caramel text-espresso rounded-md">
-                          {t}
-                        </span>
-                      ))}
+                    <div className="flex flex-wrap gap-1 mb-1 items-center">
+                      {selectedCoffee.tastingNotes.map(t => {
+                        const noteColors: { [key: string]: string } = { Fruity: 'bg-red-400', Nutty: 'bg-amber-700', Floral: 'bg-pink-300', Chocolate: 'bg-amber-900', Citrus: 'bg-yellow-400', Berry: 'bg-purple-400' };
+                        return (
+                          <span key={t} className="text-[10px] font-bold font-dm-sans px-1.5 py-0.5 bg-caramel/10 border border-caramel/30 text-espresso rounded-md flex items-center gap-1">
+                            <div className={`w-2 h-2 rounded-full ${noteColors[t] || 'bg-caramel'} border border-white/40`} />
+                            {t}
+                          </span>
+                        )
+                      })}
                     </div>
                     <p className="text-[11px] font-dm-sans text-charcoal/80"><span className="font-bold">Roast:</span> {selectedCoffee.roast}</p>
                     <p className="text-[11px] font-dm-sans text-charcoal/80"><span className="font-bold">Milk:</span> {selectedCoffee.milk}</p>

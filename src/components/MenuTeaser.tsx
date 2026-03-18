@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const MENU_ITEMS = [
   {
@@ -8,24 +9,28 @@ const MENU_ITEMS = [
     name: "Ethiopian Yirgacheffe",
     description: "Citrus, floral, and basically a morning in a cup.",
     price: "$6.00",
+    persona: "Contemporary"
   },
   {
     id: 2,
     name: "Double Espresso",
     description: "No compromises. Just clarity.",
     price: "$4.00",
+    persona: "Classic"
   },
   {
     id: 3,
     name: "Lavender Oat Latte",
     description: "Your nervous system called. It wants this.",
     price: "$7.00",
+    persona: "Avant-garde"
   },
   {
     id: 4,
     name: "Caramel Macchiato",
     description: "Classic for a reason. Your reason.",
     price: "$8.00",
+    persona: "Classic"
   },
 ];
 
@@ -96,6 +101,13 @@ const DrinkCup = ({ id }: { id: number }) => {
 };
 
 export default function MenuTeaser() {
+  const [currentPersona, setCurrentPersona] = useState<string>('All');
+  const personas = ['All', 'Classic', 'Contemporary', 'Avant-garde'];
+
+  const filteredItems = currentPersona === 'All' 
+    ? MENU_ITEMS 
+    : MENU_ITEMS.filter(item => item.persona === currentPersona);
+
   return (
     <section id="menu" className="relative w-full py-20 bg-espresso px-6 md:px-12 flex flex-col items-center overflow-hidden">
       {/* Wave top divider (cream -> espresso) */}
@@ -107,39 +119,63 @@ export default function MenuTeaser() {
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,var(--color-caramel)_0%,transparent_50%)] opacity-5 pointer-events-none" />
 
-      <h2 className="text-3xl md:text-5xl font-bold font-playfair text-cream text-center mb-12 tracking-tight">
+      <h2 className="text-3xl md:text-5xl font-bold font-playfair text-cream text-center mb-4 tracking-tight">
         A few of our signatures
       </h2>
 
+      {/* Persona Filter Tabs */}
+      <div className="flex gap-2 p-1 bg-cream/5 backdrop-blur-md rounded-full mb-12 border border-cream/10">
+        {personas.map(persona => (
+          <button 
+            key={persona} 
+            onClick={() => setCurrentPersona(persona)} 
+            className="relative px-4 py-1.5 text-xs font-semibold font-dm-sans rounded-full transition-all duration-300"
+          >
+            {currentPersona === persona && (
+              <motion.div layoutId="active-persona-bg" className="absolute inset-0 bg-caramel rounded-full" />
+            )}
+            <span className={`relative z-10 ${currentPersona === persona ? 'text-espresso' : 'text-cream/60 hover:text-cream'}`}>
+              {persona}
+            </span>
+          </button>
+        ))}
+      </div>
+
       {/* Grid or Horizontal scroll on Mobile */}
       <div className="flex overflow-x-auto md:overflow-visible md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl w-full pb-4 md:pb-0 scrollbar-hide snap-x snap-mandatory">
-        {MENU_ITEMS.map((item, i) => (
-          <motion.div
-            key={item.id}
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ delay: i * 0.1, duration: 0.5 }}
-            className="min-w-[280px] md:min-w-0 flex-shrink-0 snap-center p-6 bg-cream-dark/5 backdrop-blur-sm border border-cream/10 rounded-2xl flex flex-col items-start gap-4 hover:border-caramel/30 transition-all duration-300 group"
-          >
-            <DrinkCup id={item.id} />
+        <AnimatePresence mode="popLayout">
+          {filteredItems.map((item, i) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.4 }}
+              className="min-w-[280px] md:min-w-0 flex-shrink-0 snap-center p-6 bg-cream-dark/5 backdrop-blur-sm border border-cream/10 rounded-2xl flex flex-col items-start gap-4 hover:border-caramel/30 hover:shadow-[0px_20px_40px_rgba(0,0,0,0.4)] hover:-translate-y-1 transition-all duration-300 group"
+            >
+              <div className="absolute top-4 right-4 text-[9px] font-bold px-1.5 py-0.5 border border-caramel/30 rounded-md text-caramel/80">
+                {item.persona}
+              </div>
+              <DrinkCup id={item.id} />
 
-            <h3 className="text-xl font-bold font-playfair text-cream group-hover:text-caramel transition-colors">
-              {item.name}
-            </h3>
+              <h3 className="text-xl font-bold font-playfair text-cream group-hover:text-caramel transition-colors">
+                {item.name}
+              </h3>
 
-            <p className="text-cream/70 font-dm-sans text-sm leading-relaxed flex-grow">
-              {item.description}
-            </p>
+              <p className="text-cream/70 font-dm-sans text-sm leading-relaxed flex-grow">
+                {item.description}
+              </p>
 
-            <div className="w-full flex items-center justify-between mt-2 pt-4 border-t border-cream/10">
-              <span className="text-caramel font-bold font-dm-sans">{item.price}</span>
-              <button className="px-4 py-1.5 border border-caramel/60 hover:border-caramel text-caramel hover:bg-caramel hover:text-espresso font-semibold rounded-full font-dm-sans text-xs transition-all duration-300">
-                Add to Order
-              </button>
-            </div>
-          </motion.div>
-        ))}
+              <div className="w-full flex items-center justify-between mt-2 pt-4 border-t border-cream/10">
+                <span className="text-caramel font-bold font-dm-sans">{item.price}</span>
+                <button className="px-4 py-1.5 border border-caramel/60 hover:border-caramel text-caramel hover:bg-caramel hover:text-espresso font-semibold rounded-full font-dm-sans text-xs transition-all duration-300">
+                  Add to Order
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </section>
   );

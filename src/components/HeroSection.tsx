@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { ArrowDown } from "lucide-react";
 import gsap from "gsap";
+import { motion } from "framer-motion";
 
 export default function HeroSection({ onOpenQuiz }: { onOpenQuiz: () => void }) {
   useEffect(() => {
@@ -41,8 +42,23 @@ export default function HeroSection({ onOpenQuiz }: { onOpenQuiz: () => void }) 
       id="hero" 
       className="relative w-full h-screen bg-espresso flex flex-col items-center justify-center text-center px-6 overflow-hidden"
     >
+      {/* Cinematic Background Video Upgrade */}
+      <div className="absolute inset-0 z-0 opacity-40 pointer-events-none overflow-hidden">
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+          className="w-full h-full object-cover scale-105"
+        >
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-coffee-beans-falling-in-slow-motion-42662-preview.mp4" type="video/mp4" />
+        </video>
+        {/* Dark Overlay gradient over video */}
+        <div className="absolute inset-0 bg-gradient-to-b from-espresso via-espresso/60 to-espresso" />
+      </div>
+
       {/* Radial Glow in center */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--color-caramel)_0%,transparent_60%)] opacity-10 pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--color-caramel)_0%,transparent_60%)] opacity-15 pointer-events-none" />
 
       {/* Noise Texture layer */}
       <div 

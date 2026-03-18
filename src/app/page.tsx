@@ -17,6 +17,8 @@ const MoodBrewScan = dynamic(() => import("@/components/MoodBrewScan"), {
   )
 });
 import MenuTeaser from "@/components/MenuTeaser";
+import RecommendationFeed from "@/components/RecommendationFeed";
+import InstagramGallery from "@/components/InstagramGallery";
 
 import Footer from "@/components/Footer";
 import BrewBlueprintQuiz from "@/components/BrewBlueprintQuiz";
@@ -32,7 +34,9 @@ export default function Home() {
       <BuildYourRitual />
       <RoastRoulette />
       <MoodBrewScan />
+      <RecommendationFeed />
       <MenuTeaser />
+      <InstagramGallery />
 
       <Footer />
 
