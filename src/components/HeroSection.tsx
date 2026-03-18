@@ -11,6 +11,12 @@ export default function HeroSection({ onOpenQuiz }: { onOpenQuiz: () => void }) 
     // GSAP floating particles animation
     const particles = document.querySelectorAll(".particle");
     particles.forEach((p) => {
+      // client-side randomizers to fix Hydration Mismatch
+      gsap.set(p, {
+        left: `${Math.random() * 100}%`,
+        scale: Math.random() * 0.8 + 0.4,
+      });
+
       gsap.to(p, {
         y: "-150vh",
         x: `+=${Math.random() * 50 - 25}px`,
@@ -45,8 +51,7 @@ export default function HeroSection({ onOpenQuiz }: { onOpenQuiz: () => void }) 
             key={i}
             className="particle absolute bottom-[-20px] w-1.5 h-1.5 rounded-full bg-caramel opacity-30"
             style={{
-              left: `${Math.random() * 100}%`,
-              transform: `scale(${Math.random() * 1 + 0.5})`,
+              left: `${(i * 5) % 100}%`,
             }}
           />
         ))}
