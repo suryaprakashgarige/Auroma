@@ -4,7 +4,7 @@ import { X, Minus, Plus, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 
 export default function CartDrawer() {
-  const { items, isOpen, toggleCart, removeItem, updateQuantity, cartTotal } = useCartStore();
+  const { items, isOpen, toggleCart, removeItem, updateQuantity, cartTotal, addItem } = useCartStore();
 
   if (!isOpen) return null;
 
@@ -57,6 +57,68 @@ export default function CartDrawer() {
 
         {items.length > 0 && (
           <div className="p-6 border-t border-espresso/10 bg-cream-dark">
+            {/* Upsell Strip */}
+            <div className="mb-4">
+              <span className="font-dm-sans text-[11px] font-bold text-espresso/40 mb-2 block uppercase tracking-wider">Perfect Pairings</span>
+              <div className="flex gap-2 overflow-x-auto pb-2 -mx-2 px-2 scrollbar-none">
+                
+                {/* Pastry 1 */}
+                <div className="flex-shrink-0 w-36 bg-cream border border-espresso/5 rounded-xl p-2 flex items-center gap-2 shadow-sm">
+                  <img 
+                    src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=300&auto=format&fit=crop" 
+                    alt="Almond Croissant" 
+                    className="w-10 h-10 object-cover rounded-md"
+                  />
+                  <div className="flex flex-col flex-1">
+                    <span className="font-dm-sans font-bold text-[10px] text-espresso truncate">Almond Croissant</span>
+                    <span className="font-dm-sans text-[9px] text-charcoal/60">$4.75</span>
+                  </div>
+                  <button 
+                    onClick={() => addItem({
+                      id: 'pastry-1',
+                      name: 'Almond Croissant',
+                      price: 4.75,
+                      category: 'Pastries',
+                      imageUrl: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=300&auto=format&fit=crop',
+                      dietaryTags: ['Contains Nuts'],
+                      description: 'Warm, buttery pastry topped with sliced almonds.'
+                    })}
+                    className="p-1 bg-espresso/5 hover:bg-caramel hover:text-espresso rounded-full transition-all cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {/* Pastry 2 */}
+                <div className="flex-shrink-0 w-36 bg-cream border border-espresso/5 rounded-xl p-2 flex items-center gap-2 shadow-sm">
+                  <img 
+                    src="https://images.unsplash.com/photo-1499636136210-654cb3d0d53f?q=80&w=300&auto=format&fit=crop" 
+                    alt="Sea Salt Cookie" 
+                    className="w-10 h-10 object-cover rounded-md"
+                  />
+                  <div className="flex flex-col flex-1">
+                    <span className="font-dm-sans font-bold text-[10px] text-espresso truncate">Sea Salt Cookie</span>
+                    <span className="font-dm-sans text-[9px] text-charcoal/60">$3.50</span>
+                  </div>
+                  <button 
+                    onClick={() => addItem({
+                      id: 'pastry-2',
+                      name: 'Sea Salt Cookie',
+                      price: 3.50,
+                      category: 'Pastries',
+                      imageUrl: 'https://images.unsplash.com/photo-1499636136210-654cb3d0d53f?q=80&w=300&auto=format&fit=crop',
+                      dietaryTags: ['Vegetarian'],
+                      description: 'Dark chocolate chunks with a sprinkle of sea salt flakes.'
+                    })}
+                    className="p-1 bg-espresso/5 hover:bg-caramel hover:text-espresso rounded-full transition-all cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
             <div className="flex justify-between items-center mb-4">
               <span className="font-dm-sans text-charcoal">Subtotal</span>
               <span className="font-playfair font-bold text-xl text-espresso">${cartTotal().toFixed(2)}</span>

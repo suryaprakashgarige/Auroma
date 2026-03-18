@@ -36,20 +36,33 @@ export default function Home() {
       <Navbar onOpenQuiz={() => setIsQuizOpen(true)} />
       <CartDrawer />
 
-      {/* Hero Section */}
+      {/* 1. Hero Section */}
       <HeroSection onTakeQuiz={() => setIsQuizOpen(true)} />
 
-      {/* Our Craft (Story) Section */}
+      {/* 2. Our Craft (Story) Section */}
       <OurCraft />
 
-      {/* Bento Box Experience Grid */}
+      {/* 3. The Daily Ritual (Digital Menu) Section - Moved UP */}
+      <section id="menu" className="py-24 bg-cream flex flex-col items-center">
+        <div className="text-center mb-4">
+          <span className="font-caveat text-caramel text-xl">Menu</span>
+          <h2 className="text-3xl md:text-5xl font-bold font-playfair text-espresso tracking-tight">
+            The Daily Ritual
+          </h2>
+        </div>
+        <div className="w-full">
+          <DigitalMenu />
+        </div>
+      </section>
+
+      {/* 4. Bento Box Experience Grid */}
       <section className="relative w-full py-24 bg-espresso px-6 md:px-12 flex flex-col items-center border-y border-white/5">
         <div className="max-w-6xl w-full flex flex-col gap-12">
           
           <div className="text-center">
-            <span className="font-caveat text-caramel text-2xl">Interactive Brewing</span>
-            <h2 className="text-3xl md:text-5xl font-bold font-playfair text-cream tracking-tight mt-1">
-              Select Your Discovery Path
+            <span className="font-caveat text-caramel text-2xl">Discovery</span>
+            <h2 className="text-2xl md:text-4xl font-bold font-playfair text-cream tracking-tight mt-1">
+              Not sure what to order? <br className="md:hidden" /> Try The Auroma Experience
             </h2>
           </div>
 
@@ -139,11 +152,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Embedded Feature Sections layer with Spacing */}
-      <section id="menu" className="py-32 bg-cream">
-        <DigitalMenu />
-      </section>
-
+      {/* 5. Embedded Immersive Features */}
       <section id="build-your-ritual" className="py-32 bg-[#F4EDE4] border-y border-espresso/10">
         <BuildYourRitual />
       </section>
@@ -156,12 +165,11 @@ export default function Home() {
         <MoodBrewScan />
       </section>
 
-      {/* Social Proof (Reviews) Section */}
+      {/* 6. Social Proof (Reviews) Section */}
       <Testimonials />
 
-      {/* Digital Instagram Gallery */}
+      {/* 7. Gallery & Footer */}
       <InstagramGallery />
-      
       <Footer />
 
       {/* Modal Quiz Overlay */}

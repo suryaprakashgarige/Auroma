@@ -1,353 +1,237 @@
+// src/app/admin/page.tsx
 "use client";
 
-export const dynamic = 'force-dynamic';
-
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Coffee, LogOut, Phone, Eye, Play, CheckCircle, Clock } from "lucide-react";
-import gsap from "gsap";
+import { 
+  BarChart2, Package, Users, Settings, LogOut, 
+  Clock, CheckCircle, AlertCircle, ShoppingBag, 
+  DollarSign, ArrowUpRight, Plus, Eye 
+} from "lucide-react";
 
-type Order = {
-  id: string;
-  created_at: string;
-  customer_name: string;
-  customer_phone: string;
-  drink_name: string;
-  roast: string;
-  milk: string;
-  sweetness: number;
-  strength: string;
-  temperature: string;
-  cup_size: string;
-  syrup: string;
-  extra_shot: boolean;
-  ritual_name: string | null;
-  description: string | null;
-  price: number;
-  status: 'pending' | 'seen' | 'making' | 'ready' | 'called';
-};
-
-export default function AdminPanel() {
+export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pin, setPin] = useState("");
-  const [loginError, setLoginError] = useState("");
-  
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [filter, setFilter] = useState<'all' | Order['status']>('all');
-  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // 1. PIN Authentication
-  const handleLogin = () => {
-    // Hardcoded PIN for demo
-    if (pin === "2025") {
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pin === "1234") {
       setIsAuthenticated(true);
-      setLoginError("");
+      setError("");
     } else {
-      setLoginError("Wrong PIN. Try again.");
-      gsap.fromTo("#login-card", { x: -10 }, { x: 0, duration: 0.05, repeat: 4, yoyo: true });
+      setError("Incorrect PIN. Try 1234 for Demo.");
       setPin("");
     }
   };
 
-  // 2. Audio Ping Trigger
-  const playPing = () => {
-    try {
-      const ctx = new AudioContext();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.frequency.value = 440;
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.8);
-    } catch (e) {
-      console.log("Audio play blocked/failed: ", e);
+  const dashboardMetrics = [
+    { title: "Today's Sales", value: "$1,240.50", icon: DollarSign, trend: "+12.5%", color: "text-caramel border-caramel/20" },
+    { title: "Active Orders", value: "8", icon: ShoppingBag, trend: "Live", color: "text-espresso border-espresso/20" },
+    { title: "Top Item", value: "Oat Latte", icon: BarChart2, trend: "64 sold", color: "text-espresso border-espresso/20" }
+  ];
+
+  const kanbanColumns = [
+    {
+      id: "new",
+      title: "New Orders",
+      count: 2,
+      color: "bg-caramel/10 border-caramel/30 text-caramel",
+      items: [
+        { id: "1024", name: "Sarah J.", items: ["1x Oat Latte", "1x Sea Salt Cookie"], time: "3 mins ago", total: "$8.25" },
+        { id: "1025", name: "Marcus K.", items: ["1x Custom Ritual (Hot)"], time: "Just now", total: "$6.50" }
+      ]
+    },
+    {
+      id: "brewing",
+      title: "Brewing",
+      count: 1,
+      color: "bg-[#DDEFE0] border-[#B2DBBB] text-[#22C55E]",
+      items: [
+        { id: "1023", name: "Elena R.", items: ["1x Cold Brew Vanilla"], time: "8 mins ago", total: "$5.50" }
+      ]
+    },
+    {
+      id: "ready",
+      title: "Ready for Pickup",
+      count: 1,
+      color: "bg-espresso/5 border-espresso/10 text-espresso",
+      items: [
+        { id: "1022", name: "Alex M.", items: ["2x Espresso Bar Selection"], time: "Ready", total: "$9.00" }
+      ]
     }
-  };
-
-  // 3. Subscription & Fetch
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
-    const fetchOrders = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('orders')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) console.error("Error fetching orders:", error);
-      else setOrders(data || []);
-      setLoading(false);
-    };
-
-    fetchOrders();
-
-    // Subscribe to Insert updates
-    const channel = supabase
-      .channel('realtime-orders')
-      .on(
-        'postgres_changes', 
-        { event: 'INSERT', schema: 'public', table: 'orders' }, 
-        (payload) => {
-          const newOrder = payload.new as Order;
-          setOrders(current => [newOrder, ...current]);
-          playPing();
-          // GSAP Card flash border is handled per card inside components using key keys setups triggers.
-        }
-      )
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'orders' },
-        (payload) => {
-          const updatedOrder = payload.new as Order;
-          setOrders(current => current.map(o => o.id === updatedOrder.id ? updatedOrder : o));
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [isAuthenticated]);
-
-  const updateStatus = async (orderId: string, newStatus: Order['status']) => {
-    // Optimistic UI update
-    setOrders(current => current.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
-
-    const { error } = await supabase
-      .from('orders')
-      .update({ status: newStatus })
-      .eq('id', orderId);
-
-    if (error) {
-      console.error("Error updating status:", error);
-      // Revert if error
-    }
-  };
-
-  const counts = {
-    all: orders.length,
-    pending: orders.filter(o => o.status === 'pending').length,
-    seen: orders.filter(o => o.status === 'seen').length,
-    making: orders.filter(o => o.status === 'making').length,
-    ready: orders.filter(o => o.status === 'ready').length,
-    called: orders.filter(o => o.status === 'called').length,
-  };
-
-  const filteredOrders = filter === 'all' 
-    ? orders 
-    : orders.filter(o => o.status === filter);
+  ];
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-espresso flex items-center justify-center px-4">
-        <div id="login-card" className="w-full max-w-sm bg-cream border border-cream/10 p-8 rounded-3xl shadow-xl flex flex-col items-center">
-          <div className="flex items-center gap-2 mb-6">
-            <span className="text-2xl font-bold font-playfair text-espresso">Auroma</span>
-            <Coffee className="w-6 h-6 text-caramel fill-caramel" />
+      <div className="min-h-screen bg-espresso flex items-center justify-center p-6">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-cream max-w-sm w-full rounded-3xl p-8 shadow-2xl flex flex-col items-center gap-6"
+        >
+          <div className="p-4 bg-caramel/10 rounded-full border border-caramel/20">
+            <Package className="w-8 h-8 text-caramel" />
           </div>
-          <h2 className="text-lg font-bold font-dm-sans text-espresso mb-4">Admin Panel</h2>
-          
-          <input 
-            type="password" 
-            placeholder="Enter Pin" 
-            maxLength={4}
-            value={pin}
-            onChange={(e) => setPin(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-            className="w-full border border-espresso/10 rounded-xl px-4 py-3 font-bold text-center tracking-widest outline-none focus:border-caramel text-espresso bg-cream-dark/50"
-          />
-          {loginError && <p className="text-red-500 text-xs mt-2 font-dm-sans">{loginError}</p>}
+          <div className="text-center">
+            <h1 className="font-playfair font-bold text-2xl text-espresso">Auroma Admin</h1>
+            <p className="font-dm-sans text-xs text-charcoal/60 mt-1">Enter PIN to access Command Center</p>
+          </div>
 
-          <button 
-            onClick={handleLogin}
-            className="w-full mt-4 py-3 bg-caramel text-espresso font-bold rounded-xl shadow-md hover:bg-caramel/90 transition-all font-dm-sans"
-          >
-            Enter
-          </button>
-          <p className="text-[10px] text-charcoal/40 font-dm-sans mt-3">Hint: 2025</p>
-        </div>
+          <form onSubmit={handleLogin} className="w-full flex flex-col gap-4">
+            <input 
+              type="password" 
+              maxLength={4}
+              placeholder="••••"
+              value={pin}
+              onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, ''))}
+              className="w-full tracking-[1.5em] text-center font-bold text-xl h-14 border border-espresso/10 rounded-2xl bg-cream focus:border-caramel outline-none transition-all placeholder:tracking-normal placeholder:text-sm"
+              autoFocus
+            />
+            {error && (
+              <p className="text-red-500 text-center text-xs font-dm-sans flex items-center justify-center gap-1">
+                <AlertCircle className="w-3.5 h-3.5" /> {error}
+              </p>
+            )}
+            <button 
+              type="submit"
+              className="w-full py-3.5 bg-caramel hover:bg-caramel/90 text-espresso font-bold rounded-2xl font-dm-sans shadow-md cursor-pointer transition-all"
+            >
+              Unlock Dashboard
+            </button>
+          </form>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-cream-dark/20 flex flex-col text-espresso">
+    <div className="min-h-screen bg-[#F4F5F7] flex text-espresso font-dm-sans overflow-hidden">
       
-      {/* Admin Header */}
-      <header className="fixed top-0 left-0 w-full bg-espresso py-4 px-6 stroke-none flex items-center justify-between z-40 text-cream">
-        <div className="flex items-center gap-2 text-xl font-bold font-playfair">
-          <span>Auroma</span>
-          <Coffee className="w-4 h-4 text-caramel fill-caramel" />
-          <span className="text-xs font-dm-sans font-normal text-cream/60 ml-2">| Admin Panel</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-xs font-bold font-dm-sans px-3 py-1 bg-caramel/20 border border-caramel/30 rounded-full text-caramel">
-            {counts.pending} pending orders
-          </span>
-          <button 
-            onClick={() => setIsAuthenticated(false)}
-            className="flex items-center gap-1 border border-cream/20 px-3 py-1.5 rounded-lg text-xs font-dm-sans text-cream/80 hover:bg-cream/10 transition-colors"
-          >
-            <LogOut className="w-3.5 h-3.5" /> Logout
-          </button>
-        </div>
-      </header>
+      {/* Sidebar Layout */}
+      <aside className="w-64 bg-espresso text-cream flex flex-shrink-0 flex-col justify-between p-6 border-r border-white/5">
+        <div className="flex flex-col gap-8">
+          <div className="flex items-center gap-2 px-2">
+            <Package className="w-6 h-6 text-caramel" />
+            <span className="font-playfair font-bold text-lg">Auroma HQ</span>
+          </div>
 
-      {/* Main Content Dashboard */}
-      <main className="flex-1 mt-16 p-6 flex flex-col gap-6 max-w-6xl w-full mx-auto">
-        
-        {/* Filter Tabs */}
-        <div className="flex flex-wrap gap-2 border-b border-espresso/5 pb-2">
-          {(['all', 'pending', 'seen', 'making', 'ready', 'called'] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setFilter(t)}
-              className={`px-4 py-2 font-dm-sans text-sm font-bold transition-all relative ${
-                filter === t ? "text-caramel" : "text-charcoal/70 hover:text-espresso"
-              }`}
-            >
-              <span className="capitalize">{t}</span>
-              <span className="ml-1 text-[10px] bg-espresso/5 px-1.5 py-0.5 rounded-full">
-                {counts[t]}
-              </span>
-              {filter === t && (
-                <motion.div layoutId="active-tab" className="absolute bottom-[-9px] left-0 w-full h-0.5 bg-caramel" />
-              )}
+          <nav className="flex flex-col gap-2">
+            <button className="flex items-center gap-3 px-4 py-3 bg-white/10 text-cream rounded-xl text-sm font-semibold cursor-pointer">
+              <BarChart2 className="w-4 h-4 text-caramel" /> Dashboard
             </button>
+            <button className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 text-cream/70 hover:text-cream rounded-xl text-sm cursor-pointer transition-all">
+              <ShoppingBag className="w-4 h-4" /> Live Orders
+            </button>
+            <button className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 text-cream/70 hover:text-cream rounded-xl text-sm cursor-pointer transition-all">
+              <Package className="w-4 h-4" /> Menu Manager
+            </button>
+            <button className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 text-cream/70 hover:text-cream rounded-xl text-sm cursor-pointer transition-all">
+              <Users className="w-4 h-4" /> Customers
+            </button>
+            <button className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 text-cream/70 hover:text-cream rounded-xl text-sm cursor-pointer transition-all">
+              <Settings className="w-4 h-4" /> Settings
+            </button>
+          </nav>
+        </div>
+
+        <button 
+          onClick={() => setIsAuthenticated(false)}
+          className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 text-cream/50 hover:text-red-400 rounded-xl text-sm cursor-pointer transition-all mt-auto"
+        >
+          <LogOut className="w-4 h-4" /> Logout
+        </button>
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="flex-1 overflow-y-auto p-8 flex flex-col gap-8">
+        
+        {/* Header content stats view */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="font-playfair font-black text-3xl text-espresso tracking-tight">Command Center</h1>
+            <p className="text-charcoal/60 text-xs mt-0.5">Welcome back, Admin. Store is active.</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1.5 px-3 py-1.5 bg-[#DDEFE0] border border-[#B2DBBB] text-[#22C55E] rounded-full text-xs font-bold">
+              <span className="w-2 h-2 bg-[#22C55E] rounded-full animate-pulse" /> Live
+            </span>
+            <div className="w-9 h-9 rounded-full bg-caramel flex items-center justify-center font-bold text-espresso text-sm border-2 border-white shadow-sm">
+              S
+            </div>
+          </div>
+        </div>
+
+        {/* Metrics Row panel grids stats widgets */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {dashboardMetrics.map((m, i) => (
+            <motion.div 
+              key={m.title}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="bg-cream border border-espresso/5 p-6 rounded-2xl flex items-center justify-between shadow-sm relative group overflow-hidden"
+            >
+              <div className="flex flex-col gap-1 z-10">
+                <span className="font-dm-sans text-xs text-charcoal/50 uppercase tracking-wider">{m.title}</span>
+                <span className="font-playfair font-black text-2xl text-espresso">{m.value}</span>
+                <span className={`text-[10px] font-bold mt-1 ${m.title === "Today's Sales" ? "text-[#22C55E]" : "text-caramel"}`}>{m.trend}</span>
+              </div>
+              <div className="p-3 bg-espresso/5 rounded-xl border border-espresso/5 z-10 group-hover:bg-caramel/10 transition-colors">
+                <m.icon className={`w-6 h-6 ${m.color.split(' ')[0]}`} />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-caramel/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </motion.div>
           ))}
         </div>
 
-        {/* Orders Listing */}
-        {loading ? (
-          <div className="flex justify-center items-center py-20 text-charcoal/50 font-dm-sans">Loading orders...</div>
-        ) : filteredOrders.length === 0 ? (
-          <div className="flex justify-center items-center py-20 text-charcoal/50 font-dm-sans">No orders yet. Time for your own coffee ☕</div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <AnimatePresence>
-              {filteredOrders.map((order) => (
-                <OrderCard key={order.id} order={order} onStatusUpdate={updateStatus} />
-              ))}
-            </AnimatePresence>
+        {/* Kanban Board Queue section workflow metrics grid dashboard */}
+        <div className="flex flex-col gap-4">
+          <h2 className="font-playfair font-bold text-xl text-espresso">Live Order Queue</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1 items-start">
+            {kanbanColumns.map((col, cIndex) => (
+              <div key={col.id} className="flex flex-col gap-3 min-h-[400px]">
+                <div className={`p-3 rounded-xl border flex justify-between items-center ${col.color}`}>
+                  <span className="font-bold text-xs uppercase tracking-wider font-dm-sans">{col.title}</span>
+                  <span className="text-xs font-bold leading-none h-5 w-5 rounded-full flex items-center justify-center bg-white/20">{col.count}</span>
+                </div>
+
+                <div className="flex flex-col gap-3 flex-1">
+                  {col.items.map((item, iIndex) => (
+                    <motion.div 
+                      key={item.id}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: iIndex * 0.1 }}
+                      className="bg-cream p-4 rounded-xl border border-espresso/5 shadow-sm flex flex-col gap-3 hover:shadow-md transition-shadow relative cursor-pointer"
+                    >
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold text-sm text-espresso font-dm-sans">{item.name}</span>
+                        <span className="text-[10px] text-espresso/40">#{item.id}</span>
+                      </div>
+
+                      <div className="flex flex-col gap-0.5">
+                        {item.items.map((it, idx) => (
+                          <span key={idx} className="text-xs text-charcoal/80 font-dm-sans">{it}</span>
+                        ))}
+                      </div>
+
+                      <div className="flex justify-between items-center pt-2 border-t border-espresso/5 mt-1">
+                        <div className="flex items-center gap-1.5 text-[10px] text-charcoal/50">
+                          <Clock className="w-3 h-3" /> {item.time}
+                        </div>
+                        <span className="font-bold text-xs text-caramel">{item.total}</span>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
 
       </main>
 
     </div>
-  );
-}
-
-function OrderCard({ order, onStatusUpdate }: { order: Order; onStatusUpdate: (id: string, s: Order['status']) => void }) {
-  const badgeStyles = {
-    pending: "bg-amber-100 text-amber-800 border-amber-200",
-    seen: "bg-blue-100 text-blue-800 border-blue-200",
-    making: "bg-amber-100 text-amber-800 border-amber-200", // using amber again for warm
-    ready: "bg-green-100 text-green-800 border-green-200",
-    called: "bg-purple-100 text-purple-800 border-purple-200",
-  };
-
-  const getRelativeTime = (time: string) => {
-    const past = new Date(time);
-    const now = new Date();
-    const diffMs = now.getTime() - past.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    if (diffMins < 1) return "Just now";
-    return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
-  };
-
-  return (
-    <motion.div
-      key={order.id}
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, x: -50 }}
-      className="p-5 bg-cream border border-espresso/5 rounded-2xl shadow-sm flex flex-col gap-4 text-espresso relative overflow-hidden h-full justify-between"
-    >
-      {/* Top Meta */}
-      <div className="flex flex-col gap-1">
-        <div className="flex justify-between items-start">
-          <span className="font-bold text-base font-dm-sans">{order.customer_name}</span>
-          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeStyles[order.status]}`}>
-            {order.status.toUpperCase()}
-          </span>
-        </div>
-        <div className="flex justify-between items-center text-[10px] text-charcoal/50 font-dm-sans">
-          <span className="flex items-center gap-1"><Phone className="w-3 h-3"/> {order.customer_phone}</span>
-          <span className="flex items-center gap-1"><Clock className="w-3 h-3"/> {getRelativeTime(order.created_at)}</span>
-        </div>
-      </div>
-
-      <div className="border-t border-dashed border-espresso/10 pt-3">
-        <div className="flex justify-between items-start">
-          <span className="font-bold font-playfair text-md">{order.drink_name}</span>
-          <span className="font-bold text-xs font-dm-sans text-caramel">${order.price.toFixed(2)}</span>
-        </div>
-        <p className="text-[11px] font-dm-sans text-charcoal/80 mt-1">
-          {order.roast} · {order.milk} · {order.strength} · {order.temperature} · {order.cup_size}
-        </p>
-        {order.syrup !== 'none' || order.extra_shot ? (
-          <p className="text-[10px] font-medium text-caramel mt-0.5">
-            {order.syrup !== 'none' && `+ ${order.syrup}`} {order.extra_shot && `+ Extra Shot`}
-          </p>
-        ) : null}
-        {order.ritual_name && (
-          <p className="text-[10px] font-caveat text-charcoal/50 italic mt-1">"{order.ritual_name}"</p>
-        )}
-      </div>
-
-      {/* Vibe Note Box */}
-      {order.description && (
-        <div className="bg-caramel/15 border-l-4 border-caramel p-3 rounded-lg flex flex-col gap-1 mt-1">
-          <span className="text-[11px] font-bold font-dm-sans text-caramel flex items-center gap-1">💬 Customer's Vibe Note:</span>
-          <p className="text-xs font-dm-sans leading-relaxed text-espresso font-medium">&ldquo;{order.description}&rdquo;</p>
-        </div>
-      )}
-
-      {/* Actions Bottom */}
-      <div className="grid grid-cols-2 gap-2 pt-2">
-        {order.status === 'pending' && (
-          <button 
-            onClick={() => onStatusUpdate(order.id, 'seen')}
-            className="flex items-center justify-center gap-1 py-2 bg-espresso/5 hover:bg-espresso/10 rounded-xl text-xs font-bold font-dm-sans transition-all"
-          >
-            <Eye className="w-3.5 h-3.5"/> Seen
-          </button>
-        )}
-        {(order.status === 'pending' || order.status === 'seen') && (
-          <button 
-            onClick={() => onStatusUpdate(order.id, 'making')}
-            className="flex items-center justify-center gap-1 py-2 bg-caramel/20 hover:bg-caramel/30 text-caramel rounded-xl text-xs font-bold font-dm-sans transition-all"
-          >
-            <Coffee className="w-3.5 h-3.5"/> Making
-          </button>
-        )}
-        {order.status === 'making' && (
-          <button 
-            onClick={() => onStatusUpdate(order.id, 'ready')}
-            className="col-span-2 flex items-center justify-center gap-1 py-2 bg-jade text-cream rounded-xl text-xs font-bold font-dm-sans transition-all shadow-md"
-          >
-            <CheckCircle className="w-3.5 h-3.5"/> Ready
-          </button>
-        )}
-        {order.status === 'ready' && (
-          <a 
-            href={`tel:${order.customer_phone}`}
-            onClick={() => onStatusUpdate(order.id, 'called')}
-            className="col-span-2 flex flex-col items-center justify-center gap-0.5 py-2 bg-purple-600 hover:bg-purple-700 text-cream rounded-xl text-xs font-bold font-dm-sans transition-all shadow-md"
-          >
-            <div className="flex items-center gap-1"><Phone className="w-3.5 h-3.5"/> Call Customer</div>
-            <span className="font-caveat text-[9px] opacity-80">Tap to call directly</span>
-          </a>
-        )}
-      </div>
-
-    </motion.div>
   );
 }
