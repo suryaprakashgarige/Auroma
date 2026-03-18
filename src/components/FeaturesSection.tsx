@@ -11,6 +11,7 @@ const FEATURES = [
     description: "Answer 5 questions. Get your coffee soulmate.",
     link: "#quiz",
     active: true,
+    accent: "#C9893A"
   },
   {
     id: "shuffle",
@@ -19,6 +20,7 @@ const FEATURES = [
     description: "Feeling adventurous? Let the universe decide.",
     link: "#roast-roulette",
     active: true,
+    accent: "#4A8C7F"
   },
   {
     id: "sliders",
@@ -27,6 +29,7 @@ const FEATURES = [
     description: "Your exact coffee. Your name on it.",
     link: "#build-your-ritual",
     active: true,
+    accent: "#C9893A"
   },
   {
     id: "mood",
@@ -35,6 +38,7 @@ const FEATURES = [
     description: "Show us your face. We'll show you your cup.",
     link: "#mood-brew-scan",
     active: true,
+    accent: "#4A8C7F"
   },
 
 ];
@@ -43,6 +47,9 @@ export default function FeaturesSection({ onOpenQuiz }: { onOpenQuiz: () => void
   return (
     <section id="features" className="relative w-full py-20 bg-cream px-6 md:px-12 flex flex-col items-center">
       {/* Small accent layout */}
+      <span className="font-['Caveat'] text-xl text-caramel italic mb-3 block text-center">
+        Pick your path
+      </span>
       <h2 className="text-3xl md:text-5xl font-bold font-playfair text-espresso text-center mb-12 tracking-tight">
         Four ways to find your perfect cup
       </h2>
@@ -50,6 +57,10 @@ export default function FeaturesSection({ onOpenQuiz }: { onOpenQuiz: () => void
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl w-full">
         {FEATURES.map((feature, i) => {
           const Icon = feature.icon;
+          const isCaramel = feature.accent === "#C9893A";
+          const borderHover = isCaramel ? "hover:border-caramel/30" : "hover:border-jade/30";
+          const bgHover = isCaramel ? "group-hover:bg-caramel" : "group-hover:bg-jade";
+
           return (
             <motion.div
               key={feature.id}
@@ -58,9 +69,9 @@ export default function FeaturesSection({ onOpenQuiz }: { onOpenQuiz: () => void
               viewport={{ once: true, margin: "-50px" }}
               transition={{ delay: i * 0.15, duration: 0.6, ease: "easeOut" }}
               whileHover={{ y: -6 }}
-              className="p-8 rounded-2xl bg-cream-dark border-2 border-transparent hover:border-jade/30 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col items-start gap-4 group"
+              className={`p-8 rounded-2xl bg-cream-dark border-2 border-transparent ${borderHover} shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col items-start gap-4 group`}
             >
-              <div className="p-4 rounded-xl bg-espresso flex items-center justify-center text-caramel group-hover:bg-caramel group-hover:text-espresso transition-colors duration-300">
+              <div className={`p-4 rounded-xl bg-espresso flex items-center justify-center text-caramel ${bgHover} group-hover:text-espresso transition-colors duration-300`}>
                 <Icon className="w-6 h-6" />
               </div>
 

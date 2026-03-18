@@ -306,7 +306,7 @@ export default function MoodBrewScan() {
         {stage === 'scanning' && (
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-stretch">
             {/* Left: Camera Video */}
-            <div className="w-full md:w-1/2 aspect-square relative rounded-2xl overflow-hidden border-2 border-caramel shadow-inner bg-black">
+            <div className="w-full md:w-1/2 aspect-square min-h-[260px] relative rounded-2xl overflow-hidden border-2 border-caramel shadow-inner bg-black">
               <video 
                 ref={videoRef} 
                 autoPlay 

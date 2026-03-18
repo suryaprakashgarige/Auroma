@@ -11,6 +11,7 @@ export default function RoastRoulette() {
   const [selectedCoffee, setSelectedCoffee] = useState<typeof rouletteCoffees[0] | null>(null);
   const [lastPickedId, setLastPickedId] = useState<number | null>(null);
   const [isReasonExpanded, setIsReasonExpanded] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   const beansRef = useRef<HTMLDivElement>(null);
   const slotStripRef = useRef<HTMLDivElement>(null);
@@ -115,7 +116,8 @@ export default function RoastRoulette() {
     const notes = selectedCoffee.tastingNotes.join(" · ");
     const text = `The universe picked ${selectedCoffee.name} for me today ☕ — ${notes}. Try your luck at auroma.coffee #RoastRoulette`;
     navigator.clipboard.writeText(text);
-    alert("Copied directly to clipboard!");
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
   };
 
   const resetSpin = () => {
@@ -211,7 +213,7 @@ export default function RoastRoulette() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1, transition: { type: 'spring', damping: 15, stiffness: 120 } }}
                 exit={{ opacity: 0, scale: 0.8 }}
-                className="w-full max-w-lg bg-cream-dark/20 border border-espresso/5 rounded-3xl p-6 md:p-8 shadow-xl flex flex-col text-espresso items-center bg-transparent z-1 relative"
+                className="w-full max-w-lg bg-cream-dark/20 border border-espresso/5 rounded-3xl p-6 md:p-10 shadow-xl flex flex-col text-espresso items-center bg-transparent z-1 relative"
               >
                 {/* Confetti or Burst particle triggers */}
                 
@@ -318,6 +320,19 @@ export default function RoastRoulette() {
         </div>
 
       </div>
+      <AnimatePresence>
+        {isCopied && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-6 right-6 z-50 px-4 py-2.5 bg-espresso text-cream rounded-xl font-dm-sans text-xs font-bold shadow-xl border border-caramel/20 flex items-center gap-2"
+          >
+            <Check className="w-3.5 h-3.5 text-caramel" />
+            Result copied to clipboard!
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

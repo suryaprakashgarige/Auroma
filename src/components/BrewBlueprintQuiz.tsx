@@ -15,6 +15,7 @@ export default function BrewBlueprintQuiz({
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [result, setResult] = useState<DrinkResult | null>(null);
+  const [isCopied, setIsCopied] = useState(false);
 
   const handleSelect = (questionId: string, optionId: string) => {
     setAnswers({ ...answers, [questionId]: optionId });
@@ -46,7 +47,8 @@ export default function BrewBlueprintQuiz({
     if (!result) return;
     const shareText = `Auroma says I'm ${result.persona} ☕ My match: ${result.name}. Find yours at auroma.coffee`;
     navigator.clipboard.writeText(shareText);
-    alert("Result copied to clipboard!");
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
   };
 
   const currentQuestion = QUESTIONS[currentStep];
@@ -60,7 +62,7 @@ export default function BrewBlueprintQuiz({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 bg-espresso/98 backdrop-blur-md flex flex-col items-center justify-center p-6"
+        className="fixed inset-0 z-50 bg-espresso/98 backdrop-blur-md flex flex-col items-center justify-center p-6 overflow-y-auto"
       >
         {/* Close Button or Back */}
         <div className="absolute top-6 left-6 flex items-center gap-4">
@@ -142,7 +144,7 @@ export default function BrewBlueprintQuiz({
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="w-full max-w-md bg-cream-dark rounded-3xl p-8 flex flex-col items-center text-center shadow-2xl text-espresso"
+            className="w-full max-w-md bg-cream-dark p-6 md:p-8 md:rounded-3xl rounded-none h-full md:h-auto overflow-y-auto flex flex-col items-center text-center shadow-2xl text-espresso"
           >
             <div className="text-caramel font-caveat text-2xl mb-1">You&apos;re {result.persona}</div>
             <h2 className="text-3xl md:text-4xl font-bold font-playfair mb-3">
@@ -181,6 +183,17 @@ export default function BrewBlueprintQuiz({
             <button onClick={resetQuiz} className="mt-5 text-caramel font-semibold text-sm font-dm-sans hover:underline flex items-center gap-1">
               <RefreshCw className="w-3 h-3" /> Retake Quiz
             </button>
+          </motion.div>
+        )}
+        {isCopied && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-6 right-6 z-50 px-4 py-2.5 bg-espresso text-cream rounded-xl font-dm-sans text-xs font-bold shadow-xl border border-caramel/20 flex items-center gap-2"
+          >
+            <Check className="w-3.5 h-3.5 text-caramel" />
+            Result copied!
           </motion.div>
         )}
       </motion.div>

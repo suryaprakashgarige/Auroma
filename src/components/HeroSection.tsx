@@ -44,6 +44,16 @@ export default function HeroSection({ onOpenQuiz }: { onOpenQuiz: () => void }) 
       {/* Radial Glow in center */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--color-caramel)_0%,transparent_60%)] opacity-10 pointer-events-none" />
 
+      {/* Noise Texture layer */}
+      <div 
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '128px 128px'
+        }}
+      />
+
       {/* Floating Particle Container */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {[...Array(20)].map((_, i) => (
@@ -59,7 +69,7 @@ export default function HeroSection({ onOpenQuiz }: { onOpenQuiz: () => void }) 
 
       {/* Content */}
       <div className="relative z-10 max-w-4xl flex flex-col items-center gap-5">
-        <h1 className="hero-text text-4xl md:text-7xl font-bold font-playfair text-cream tracking-tight leading-dense">
+        <h1 className="hero-text text-5xl sm:text-6xl md:text-7xl font-bold font-playfair text-cream tracking-tight leading-dense">
           We Read the Room.<br />
           Then We Make the Coffee.
         </h1>
@@ -77,8 +87,8 @@ export default function HeroSection({ onOpenQuiz }: { onOpenQuiz: () => void }) 
           >
             Find My Coffee Match →
           </button>
-          <Link href="#features">
-            <button className="px-8 py-3.5 border-2 border-cream/40 hover:border-cream text-cream font-medium rounded-full font-dm-sans transition-all duration-300">
+          <Link href="#mood-brew-scan">
+            <button className="px-8 py-3.5 border-2 border-cream/40 hover:border-cream text-cream font-medium rounded-full font-dm-sans transition-all duration-300 cursor-pointer">
               Scan My Mood
             </button>
           </Link>
@@ -87,9 +97,16 @@ export default function HeroSection({ onOpenQuiz }: { onOpenQuiz: () => void }) 
 
 
       {/* Scroll Down Arrow */}
-      <Link href="#features" className="absolute bottom-8 left-1/2 -translate-x-1/2 text-cream/60 hover:text-cream animate-bounce transition-colors">
+      <Link href="#features" className="absolute bottom-16 left-1/2 -translate-x-1/2 text-cream/60 hover:text-cream animate-bounce transition-colors">
         <ArrowDown className="w-8 h-8" />
       </Link>
+
+      {/* Wave bottom divider (espresso -> cream) */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none" className="w-full h-[40px] md:h-[60px]" fill="#FAF4EC" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z"/>
+        </svg>
+      </div>
     </section>
   );
 }

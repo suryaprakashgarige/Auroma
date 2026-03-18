@@ -76,6 +76,7 @@ export default function BuildYourRitual() {
   
   const [orderStatus, setOrderStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [isSaved, setIsSaved] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -162,7 +163,8 @@ export default function BuildYourRitual() {
     const drinkName = DRINK_NAMES[roast][milk];
     const text = `I built my perfect coffee on Auroma ☕ '${drinkName}' — ${SWEETNESS_LABELS[sweetness]} · ${strength + (extraShot ? 1 : 0)} Shot${(strength + (extraShot ? 1 : 0)) > 1 ? "s" : ""} · ${temperature} · ${size}. Build yours at auroma.coffee`;
     navigator.clipboard.writeText(text);
-    alert("Copied to clipboard!");
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 2000);
   };
 
   const validateForm = () => {
@@ -232,8 +234,8 @@ export default function BuildYourRitual() {
           </p>
         </div>
 
-        {/* Two Columns Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start w-full">
+        {/* Two Columns Grid - Mobile stacks preview first, Desktop side-by-side */}
+        <div className="flex flex-col-reverse lg:flex-row gap-10 items-start w-full">
           
           {/* Controls - Left Column */}
           <div className="flex flex-col gap-8 animate-in">
@@ -609,6 +611,19 @@ export default function BuildYourRitual() {
         </div>
 
       </div>
+      <AnimatePresence>
+        {isCopied && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-6 right-6 z-50 px-4 py-2.5 bg-espresso text-cream rounded-xl font-dm-sans text-xs font-bold shadow-xl border border-caramel/20 flex items-center gap-2"
+          >
+            <Check className="w-3.5 h-3.5 text-caramel" />
+            Build copied to clipboard!
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
