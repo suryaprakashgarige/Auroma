@@ -6,7 +6,9 @@ import HeroSection from "@/components/HeroSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import BuildYourRitual from "@/components/BuildYourRitual";
 import RoastRoulette from "@/components/RoastRoulette";
+import MoodBrewScan from "@/components/MoodBrewScan";
 import MenuTeaser from "@/components/MenuTeaser";
+
 import Footer from "@/components/Footer";
 import BrewBlueprintQuiz from "@/components/BrewBlueprintQuiz";
 
@@ -20,7 +22,9 @@ export default function Home() {
       <FeaturesSection onOpenQuiz={() => setIsQuizOpen(true)} />
       <BuildYourRitual />
       <RoastRoulette />
+      <MoodBrewScan />
       <MenuTeaser />
+
       <Footer />
 
 

@@ -33,9 +33,10 @@ const FEATURES = [
     icon: Smile,
     name: "Mood Brew Scan",
     description: "Show us your face. We'll show you your cup.",
-    link: "#",
-    active: false,
+    link: "#mood-brew-scan",
+    active: true,
   },
+
 ];
 
 export default function FeaturesSection({ onOpenQuiz }: { onOpenQuiz: () => void }) {
