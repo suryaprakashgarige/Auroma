@@ -195,12 +195,12 @@ export default function BuildYourRitual() {
   };
 
   return (
-    <section id="build-your-ritual" className="relative w-full py-20 bg-cream-dark/30 px-6 md:px-12 flex flex-col items-center">
+    <section id="build-your-ritual" className="relative w-full py-20 bg-[#FAF4EC] px-6 md:px-12 flex flex-col items-center">
       <div className="max-w-6xl w-full flex flex-col gap-12">
         
         {/* Header */}
         <div className="text-center animate-in">
-          <h2 className="text-3xl md:text-5xl font-bold font-playfair text-espresso mb-3 tracking-tight">
+          <h2 className="text-3xl md:text-5xl font-bold font-playfair text-[#2C1A0E] mb-3 tracking-tight">
             Build Your Ritual
           </h2>
           <p className="text-sm md:text-base text-charcoal/70 font-dm-sans max-w-md mx-auto">
@@ -387,7 +387,7 @@ export default function BuildYourRitual() {
               <textarea 
                 value={description}
                 onChange={(e) => setDescription(e.target.value.slice(0, 300))}
-                className="w-full h-24 p-3 border border-espresso/10 rounded-xl focus:border-caramel outline-none bg-cream font-dm-sans text-sm resize-none"
+                className="w-full h-24 p-3 border rounded-xl outline-none font-dm-sans text-sm bg-[#FAF4EC] text-[#3A3A3A] placeholder:text-[#3A3A3A]/40 border-[#C9893A]/30 focus:border-[#C9893A] resize-none"
                 placeholder="e.g. 'Not too bitter, warm, a little sweet — like a hug on a rainy day. Maybe a hint of vanilla...'"
               />
               <span className="text-right text-[10px] text-charcoal/50">{description.length}/300</span>
