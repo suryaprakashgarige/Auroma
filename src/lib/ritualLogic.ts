@@ -1,5 +1,8 @@
 export type RoastLevel = 'light' | 'medium' | 'dark' | 'extra_dark';
 export type MilkType = 'dairy' | 'oat' | 'almond' | 'none';
+export type Temperature = 'hot' | 'iced' | 'blended';
+export type CupSize = 'S' | 'M' | 'L';
+export type Syrup = 'vanilla' | 'caramel' | 'hazelnut' | 'none';
 
 export const ROAST_NOTES: Record<RoastLevel, string> = {
   light: "Bright, citrus, floral — a morning in a garden",
@@ -13,6 +16,19 @@ export const MILK_NOTES: Record<MilkType, string> = {
   oat: "Naturally sweet, silky smooth",
   almond: "Light, nutty, subtle",
   none: "Pure. Uncut. Respect.",
+};
+
+export const TEMP_NOTES: Record<Temperature, string> = {
+  hot: "The classic. Warmth in every sip.",
+  iced: "Cold, smooth, refreshing hit.",
+  blended: "Creamy, thick, dessert-level indulgence.",
+};
+
+export const SYRUP_NOTES: Record<Syrup, string> = {
+  vanilla: "Soft, sweet, universally loved",
+  caramel: "Rich, buttery warmth",
+  hazelnut: "Nutty depth, slightly smoky",
+  none: "Let the coffee speak for itself",
 };
 
 export const TASTING_NOTES: Record<RoastLevel, string> = {
@@ -31,8 +47,8 @@ export const AROMA_NOTES: Record<RoastLevel, string> = {
 
 export const DRINK_NAMES: Record<RoastLevel, Record<MilkType, string>> = {
   light: {
-    dairy: "Golden Velvet Latte",
-    oat: "Citrus Bloom Oat",
+    dairy: "Golden Bloom Latte",
+    oat: "Citrus Oat Cloud",
     almond: "Sunrise Almond Mist",
     none: "The Bright Shot",
   },
@@ -56,6 +72,12 @@ export const DRINK_NAMES: Record<RoastLevel, Record<MilkType, string>> = {
   },
 };
 
+export const BASE_PRICES: Record<CupSize, number> = {
+  S: 5.00,
+  M: 6.50,
+  L: 8.00
+};
+
 export const PRESETS = [
   {
     name: "Bold & Brainy",
@@ -63,7 +85,11 @@ export const PRESETS = [
     milk: "none" as MilkType,
     sweetness: 0,
     strength: 3,
-    tags: ["No Sugar", "Triple Shot", "Pure"],
+    temperature: "hot" as Temperature,
+    size: "M" as CupSize,
+    syrup: "none" as Syrup,
+    extraShot: true,
+    tags: ["No Sugar", "Triple Shot", "Dark"],
   },
   {
     name: "Soft & Sweet",
@@ -71,7 +97,11 @@ export const PRESETS = [
     milk: "oat" as MilkType,
     sweetness: 3,
     strength: 1,
-    tags: ["Oat Milk", "Sweet", "Single"],
+    temperature: "hot" as Temperature,
+    size: "L" as CupSize,
+    syrup: "vanilla" as Syrup,
+    extraShot: false,
+    tags: ["Oat Milk", "Sweet", "Vanilla"],
   },
   {
     name: "Citrus Explorer",
@@ -79,7 +109,11 @@ export const PRESETS = [
     milk: "none" as MilkType,
     sweetness: 0,
     strength: 2,
-    tags: ["Bright", "Double Shot", "Black"],
+    temperature: "iced" as Temperature,
+    size: "M" as CupSize,
+    syrup: "none" as Syrup,
+    extraShot: false,
+    tags: ["Bright", "Double Shot", "Iced"],
   },
   {
     name: "Midnight Indulgence",
@@ -87,6 +121,10 @@ export const PRESETS = [
     milk: "dairy" as MilkType,
     sweetness: 2,
     strength: 2,
-    tags: ["Intense", "Sweet", "Double"],
+    temperature: "blended" as Temperature,
+    size: "L" as CupSize,
+    syrup: "caramel" as Syrup,
+    extraShot: true,
+    tags: ["Intense", "Sweet", "Blended"],
   },
 ];
