@@ -8,6 +8,9 @@ import { Sparkles, Dice5, ScanFace, Sliders } from "lucide-react";
 
 import Navbar from "@/components/Navbar";
 import CartDrawer from "@/components/CartDrawer";
+import HeroSection from "@/components/HeroSection";
+import OurCraft from "@/components/OurCraft";
+import Testimonials from "@/components/Testimonials";
 import InstagramGallery from "@/components/InstagramGallery";
 import DigitalMenu from "@/components/DigitalMenu";
 import Footer from "@/components/Footer";
@@ -34,65 +37,13 @@ export default function Home() {
       <CartDrawer />
 
       {/* Hero Section */}
-      <section className="relative w-full h-screen flex items-center justify-center px-6 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=2000&auto=format&fit=crop" 
-            alt="Coffee aesthetic" 
-            className="w-full h-full object-cover brightness-[0.4]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-espresso/40 via-transparent to-espresso/80" />
-        </div>
+      <HeroSection onTakeQuiz={() => setIsQuizOpen(true)} />
 
-        <div className="relative z-10 text-center max-w-4xl flex flex-col items-center gap-4">
-          <motion.span 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="font-caveat text-caramel text-2xl md:text-3xl"
-          >
-            Sip in fine frequency
-          </motion.span>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-4xl md:text-7xl font-playfair font-black text-cream tracking-tight leading-none"
-          >
-            Coffee, Tailored to <br className="hidden md:inline" /> Your Frequency.
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="font-dm-sans text-cream/80 text-sm md:text-lg max-w-md mt-2"
-          >
-            Experience premium roasts mapped to your mood, routine, and universe state.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="mt-6 flex gap-4"
-          >
-            <button 
-              onClick={() => scrollTo('menu')} 
-              className="px-6 py-3 bg-caramel text-espresso font-bold rounded-full font-dm-sans text-sm hover:shadow-[0_0_30px_rgba(201,137,58,0.3)] transition-all cursor-pointer"
-            >
-              Order Now
-            </button>
-            <button 
-              onClick={() => setIsQuizOpen(true)} 
-              className="px-6 py-3 border border-cream/30 text-cream font-bold rounded-full font-dm-sans text-sm hover:bg-cream/10 transition-all cursor-pointer flex items-center gap-2"
-            >
-              <Sparkles className="w-4 h-4 text-caramel" /> Take the Quiz
-            </button>
-          </motion.div>
-        </div>
-      </section>
+      {/* Our Craft (Story) Section */}
+      <OurCraft />
 
       {/* Bento Box Experience Grid */}
-      <section className="relative w-full py-24 bg-espresso px-6 md:px-12 flex flex-col items-center">
+      <section className="relative w-full py-24 bg-espresso px-6 md:px-12 flex flex-col items-center border-y border-white/5">
         <div className="max-w-6xl w-full flex flex-col gap-12">
           
           <div className="text-center">
@@ -188,11 +139,27 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Embedded Feature Sections layer */}
-      <DigitalMenu />
-      <BuildYourRitual />
-      <RoastRoulette />
-      <MoodBrewScan />
+      {/* Embedded Feature Sections layer with Spacing */}
+      <section id="menu" className="py-32 bg-cream">
+        <DigitalMenu />
+      </section>
+
+      <section id="build-your-ritual" className="py-32 bg-[#F4EDE4] border-y border-espresso/10">
+        <BuildYourRitual />
+      </section>
+
+      <section id="roast-roulette" className="py-32 bg-espresso text-cream border-y border-white/5">
+        <RoastRoulette />
+      </section>
+
+      <section id="mood-brew-scan" className="py-32 bg-cream">
+        <MoodBrewScan />
+      </section>
+
+      {/* Social Proof (Reviews) Section */}
+      <Testimonials />
+
+      {/* Digital Instagram Gallery */}
       <InstagramGallery />
       
       <Footer />
