@@ -221,7 +221,7 @@ export default function BuildYourRitual() {
                   {/* Cup Body back layer */}
                   <path d="M25 40 L25 80 Q25 90 35 90 L65 90 Q75 90 75 80 L75 40" fill="#fcf8f2" stroke="#2C1A0E" strokeWidth="3"/>
                   {/* Coffee Fill Level */}
-                  <path d="M26 44 L26 80 Q26 89 35 89 L65 89 Q74 89 74 80 L74 44 Z" fill={getCoffeeColor()} transition-all duration-300 />
+                  <path d="M26 44 L26 80 Q26 89 35 89 L65 89 Q74 89 74 80 L74 44 Z" fill={getCoffeeColor()} className="transition-all duration-300" />
                   {/* Milk/Foam Layer */}
                   {milk !== "none" && (
                     <path d="M26 44 L74 44 Q60 48 26 44 Z" fill="#FaF4Ec" className="opacity-90"/>
