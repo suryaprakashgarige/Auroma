@@ -25,8 +25,8 @@ const FEATURES = [
     icon: Sliders,
     name: "Build Your Ritual",
     description: "Your exact coffee. Your name on it.",
-    link: "#",
-    active: false,
+    link: "#build-your-ritual",
+    active: true,
   },
   {
     id: "mood",
@@ -73,12 +73,21 @@ export default function FeaturesSection({ onOpenQuiz }: { onOpenQuiz: () => void
 
               <div className="mt-4">
                 {feature.active ? (
-                  <button 
-                    onClick={onOpenQuiz}
-                    className="px-5 py-2 border-2 border-caramel/60 hover:border-caramel hover:bg-caramel text-espresso font-semibold rounded-full font-dm-sans tracking-wide text-sm transition-all duration-300"
-                  >
-                    Try It
-                  </button>
+                  feature.id === "quiz" ? (
+                    <button 
+                      onClick={onOpenQuiz}
+                      className="px-5 py-2 border-2 border-caramel/60 hover:border-caramel hover:bg-caramel text-espresso font-semibold rounded-full font-dm-sans tracking-wide text-sm transition-all duration-300"
+                    >
+                      Try It
+                    </button>
+                  ) : (
+                    <a 
+                      href={feature.link}
+                      className="px-5 py-2 border-2 border-caramel/60 hover:border-caramel hover:bg-caramel text-espresso font-semibold rounded-full font-dm-sans tracking-wide text-sm transition-all duration-300 inline-block"
+                    >
+                      Try It
+                    </a>
+                  )
                 ) : (
                   <button 
                     disabled
@@ -88,6 +97,7 @@ export default function FeaturesSection({ onOpenQuiz }: { onOpenQuiz: () => void
                   </button>
                 )}
               </div>
+
             </motion.div>
           );
         })}

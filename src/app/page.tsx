@@ -4,6 +4,7 @@ import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import FeaturesSection from "@/components/FeaturesSection";
+import BuildYourRitual from "@/components/BuildYourRitual";
 import MenuTeaser from "@/components/MenuTeaser";
 import Footer from "@/components/Footer";
 import BrewBlueprintQuiz from "@/components/BrewBlueprintQuiz";
@@ -16,8 +17,10 @@ export default function Home() {
       <Navbar />
       <HeroSection onOpenQuiz={() => setIsQuizOpen(true)} />
       <FeaturesSection onOpenQuiz={() => setIsQuizOpen(true)} />
+      <BuildYourRitual />
       <MenuTeaser />
       <Footer />
+
 
 
       {/* Quiz Interactive Overlay */}

@@ -50,6 +50,7 @@ export default function Navbar() {
         <Link href="#menu" className="hover:text-caramel transition-colors">Menu</Link>
         <Link href="#story" className="hover:text-caramel transition-colors">Our Story</Link>
         <Link href="#quiz" className="hover:text-caramel transition-colors">Find Your Brew</Link>
+        <Link href="#build-your-ritual" className="hover:text-caramel transition-colors">Build Your Ritual</Link>
         <Link href="#visit" className="hover:text-caramel transition-colors">Visit Us</Link>
       </nav>
 
@@ -79,6 +80,7 @@ export default function Navbar() {
             <Link href="#menu" onClick={() => setIsOpen(false)} className="hover:text-caramel">Menu</Link>
             <Link href="#story" onClick={() => setIsOpen(false)} className="hover:text-caramel">Our Story</Link>
             <Link href="#quiz" onClick={() => setIsOpen(false)} className="hover:text-caramel">Find Your Brew</Link>
+            <Link href="#build-your-ritual" onClick={() => setIsOpen(false)} className="hover:text-caramel">Build Your Ritual</Link>
             <Link href="#visit" onClick={() => setIsOpen(false)} className="hover:text-caramel">Visit Us</Link>
             <Link href="#quiz" onClick={() => setIsOpen(false)}>
               <button className="w-full mt-2 px-6 py-2.5 bg-caramel text-espresso font-semibold rounded-full shadow-[0_0_10px_var(--color-caramel)]">
