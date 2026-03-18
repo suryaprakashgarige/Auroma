@@ -146,48 +146,71 @@ export default function MoodBrewScan() {
 
     setStage('scanning');
     
-    // Allow camera to render first frame
-    setTimeout(async () => {
-      const camStarted = await startCamera();
-      if (!camStarted) return;
+    const camStarted = await startCamera();
+    if (!camStarted) return;
 
-      resultsRef.current = [];
-      let frames = 0;
-      
-      const interval = setInterval(async () => {
-        if (!videoRef.current || !faceapi) return;
+    // Wait for video to have enough data before detecting
+    await new Promise<void>((resolve) => {
+      const video = videoRef.current;
+      if (!video) { resolve(); return; }
+      if (video.readyState >= 2) { resolve(); return; }
+      video.onloadeddata = () => resolve();
+      // Fallback timeout in case event never fires
+      setTimeout(resolve, 1500);
+    });
 
-        try {
-          const detection = await faceapi
-            .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions())
-            .withFaceExpressions();
+    // Small extra buffer for stable frames
+    await new Promise(r => setTimeout(r, 300));
 
-          if (detection) {
-            setExpressions(detection.expressions);
-            const mood = detectMood(detection.expressions);
-            resultsRef.current.push(mood);
-          }
-        } catch (err) {
-          console.error("Detection error:", err);
+    resultsRef.current = [];
+    let frames = 0;
+
+    const interval = setInterval(async () => {
+      if (!videoRef.current || !faceapi) return;
+
+      try {
+        const detection = await faceapi
+          .detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.3 }))
+          .withFaceExpressions();
+
+        if (detection) {
+          setExpressions(detection.expressions);
+          const mood = detectMood(detection.expressions);
+          resultsRef.current.push(mood);
         }
+      } catch (err) {
+        console.error("Detection error:", err);
+      }
 
-        frames++;
-        if (frames >= 6) { // 3 seconds total (500ms * 6)
-          clearInterval(interval);
-          stopCamera();
+      frames++;
+      if (frames >= 6) { // 3 seconds total (500ms * 6)
+        clearInterval(interval);
+        stopCamera();
 
-          const finalMood = getMostFrequentMood(resultsRef.current) || 'Neutral';
-          setDetectedMood(finalMood);
-          setStage('result');
-          setExpressions(null); // Reset
-        }
-      }, 500);
-    }, 100);
+        const finalMood = getMostFrequentMood(resultsRef.current) || 'Neutral';
+        setDetectedMood(finalMood);
+        setStage('result');
+        setExpressions(null); // Reset
+      }
+    }, 500);
+
   };
 
   const handleManualMood = (mood: MoodType) => {
     setDetectedMood(mood);
     setStage('result');
+  };
+
+  const getMoodExpressionScore = (mood: string, expressions: any): number => {
+    if (!expressions) return 0;
+    switch (mood) {
+      case 'Chill':   return expressions.happy || 0;
+      case 'Tense':   return Math.max(expressions.angry || 0, expressions.disgusted || 0);
+      case 'Tired':   return Math.max(expressions.sad || 0, expressions.fearful || 0);
+      case 'Focused': return expressions.surprised || 0;
+      case 'Neutral': return expressions.neutral || 0;
+      default: return 0;
+    }
   };
 
   return (
@@ -320,8 +343,9 @@ export default function MoodBrewScan() {
               
               <div className="space-y-4 mb-4">
                 {['Chill', 'Tense', 'Tired', 'Focused', 'Neutral'].map((m) => {
-                  const score = expressions ? (expressions[m.toLowerCase()] || 0) : 0;
+                  const score = getMoodExpressionScore(m, expressions);
                   const itemMood = m as MoodType;
+
                   const isDominant = expressions && detectMood(expressions) === itemMood;
 
                   return (

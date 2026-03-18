@@ -97,15 +97,33 @@ export const moodData = {
 
 export const detectMood = (expressions: any): MoodType => {
   if (!expressions) return 'Neutral';
-  
-  const { happy = 0, sad = 0, angry = 0, fearful = 0, surprised = 0, disgusted = 0 } = expressions;
 
-  if (happy > 0.5) return 'Chill';
-  if (angry > 0.4 || disgusted > 0.3) return 'Tense';
-  if (fearful > 0.35 || sad > 0.4) return 'Tired';
-  if (surprised > 0.4) return 'Focused';
-  return 'Neutral';
+  // face-api.js returns: neutral, happy, sad, angry, fearful, disgusted, surprised
+  // Find the single highest scoring expression
+  const entries = Object.entries(expressions) as [string, number][];
+  const dominant = entries.reduce((a, b) => (b[1] > a[1] ? b : a));
+  const [topExpression, topScore] = dominant;
+
+  // If confidence is very low across the board, return Neutral
+  if (topScore < 0.15) return 'Neutral';
+
+  // Map face-api expressions → Auroma moods
+  switch (topExpression) {
+    case 'happy':     return 'Chill';
+    case 'angry':     return 'Tense';
+    case 'disgusted': return 'Tense';
+    case 'sad':       return 'Tired';
+    case 'fearful':   return 'Tired';
+    case 'surprised': return 'Focused';
+    case 'neutral':
+    default:
+      // If neutral is dominant but happy is a close second (relaxed face),
+      // nudge toward Chill
+      if (expressions.happy > 0.15) return 'Chill';
+      return 'Neutral';
+  }
 };
+
 
 export const getMostFrequentMood = (moods: MoodType[]): MoodType | null => {
   if (moods.length === 0) return null;
