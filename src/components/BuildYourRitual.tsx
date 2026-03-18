@@ -105,6 +105,30 @@ export default function BuildYourRitual() {
     );
   }, [roast, milk, sweetness, strength, temperature, size, syrup, extraShot]);
 
+  useEffect(() => {
+    const handleLoad = (e: any) => {
+      const data = e.detail;
+      if (data.roast) setRoast(data.roast as RoastLevel);
+      if (data.milk) setMilk(data.milk as MilkType);
+      if (data.sweetness !== undefined) setSweetness(data.sweetness);
+      if (data.strength !== undefined) setStrength(data.strength);
+      if (data.temperature) setTemperature(data.temperature as Temperature);
+      if (data.size) setSize(data.size as CupSize);
+      if (data.syrup) setSyrup(data.syrup as Syrup);
+      if (data.extra_shot !== undefined) setExtraShot(data.extra_shot);
+      
+      gsap.fromTo(
+        ".preview-card",
+        { rotateY: 5 },
+        { rotateY: 0, duration: 0.4, ease: "back.out(1.2)" }
+      );
+    };
+
+    window.addEventListener('loadCoffeeRitual', handleLoad as EventListener);
+    return () => window.removeEventListener('loadCoffeeRitual', handleLoad as EventListener);
+  }, []);
+
+
   const calculatePrice = () => {
     let total = BASE_PRICES[size];
     if (extraShot) total += 1.00;

@@ -17,8 +17,8 @@ const FEATURES = [
     icon: Shuffle,
     name: "Roast Roulette",
     description: "Feeling adventurous? Let the universe decide.",
-    link: "#",
-    active: false,
+    link: "#roast-roulette",
+    active: true,
   },
   {
     id: "sliders",
