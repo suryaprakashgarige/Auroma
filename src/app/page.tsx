@@ -5,6 +5,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { Sparkles, Dice5, ScanFace, Sliders } from "lucide-react";
+import Image from "next/image";
 
 import Navbar from "@/components/Navbar";
 import CartDrawer from "@/components/CartDrawer";
@@ -78,10 +79,11 @@ export default function Home() {
               onClick={() => scrollTo('mood-brew-scan')}
               className="md:col-span-2 md:row-span-2 rounded-3xl overflow-hidden relative group cursor-pointer border border-white/5 shadow-2xl"
             >
-              <img 
-                src="https://images.unsplash.com/photo-1507133769160-bd8338650444?q=80&w=1200&auto=format&fit=crop" 
+              <Image 
+                src="https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=1200&auto=format&fit=crop" 
                 alt="Face Scan Teaser" 
-                className="absolute inset-0 w-full h-full object-cover brightness-[0.35] group-hover:scale-105 transition-transform duration-700" 
+                fill
+                className="object-cover brightness-50 group-hover:scale-105 transition-transform duration-700" 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-espresso via-espresso/20 to-transparent flex flex-col justify-end p-8 gap-2">
                 <div className="p-3 bg-caramel/20 rounded-xl w-fit border border-caramel/30">

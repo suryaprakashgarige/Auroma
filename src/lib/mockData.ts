@@ -37,7 +37,7 @@ export const menuItems: MenuItem[] = [
     description: "Twice-baked butter croissant filled with sweet almond frangipane.",
     price: 4.75,
     category: "Pastries",
-    imageUrl: "https://images.unsplash.com/photo-1530610476181-d83430b64dcb?q=80&w=1000&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=800&auto=format&fit=crop",
     dietaryTags: ["Vegetarian"],
   },
   {
@@ -66,7 +66,7 @@ export const menuItems: MenuItem[] = [
     description: "A visually stunning layer of earthy matcha and cold milk with a float of espresso.",
     price: 6.00,
     category: "Signatures",
-    imageUrl: "https://images.unsplash.com/photo-1594631252845-29fc45898d41?q=80&w=1000&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?q=80&w=800&auto=format&fit=crop",
     dietaryTags: ["Vegetarian"],
     roastLevel: "Medium"
   }

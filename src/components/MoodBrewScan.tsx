@@ -516,7 +516,7 @@ export default function MoodBrewScan() {
                     description: data.whyThisMatches,
                     price: 6.50,
                     category: 'Signatures',
-                    imageUrl: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=600&auto=format&fit=crop',
+                    imageUrl: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=600&auto=format&fit=crop',
                     dietaryTags: data.tastingNotes
                   });
                 }}
