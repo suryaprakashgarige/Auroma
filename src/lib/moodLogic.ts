@@ -1,6 +1,6 @@
 // lib/moodLogic.ts
 
-export type MoodType = 'Chill' | 'Tense' | 'Tired' | 'Focused' | 'Neutral';
+export type MoodType = 'Chill' | 'Tense' | 'Tired' | 'Focused' | 'Neutral' | 'Creative';
 
 export const moodData = {
   Chill: {
@@ -91,6 +91,24 @@ export const moodData = {
       hasFoam: true,
       whyThisMatches: "When you're neutral, the best coffee is the one that doesn't demand anything from you — it just delivers. A medium roast oat latte is the universal coffee handshake: smooth enough to please any mood, strong enough to actually work, comforting enough to feel like a good decision. You might be neutral now. You won't be after this.",
       science: "Medium roast strikes the optimal balance between caffeine content (higher in lighter roasts) and flavour development (higher in darker roasts). Oat milk's beta-glucan content provides a stable energy co-substrate alongside caffeine."
+    }
+  },
+  Creative: {
+    emoji: '💡',
+    tagline: "The muse is calling. Answer her.",
+    drink: {
+      name: 'Floral Ethiopian Pour Over',
+      roast: 'Light',
+      milk: 'None',
+      strength: 'Double',
+      temperature: 'Hot',
+      tastingNotes: ['Jasmine', 'Apricot', 'Tea-like'],
+      aroma: 'Bright, ethereal, and slightly wild',
+      origin: 'Ethiopia · Gedeb',
+      cupColor: '#E2B877',
+      hasFoam: false,
+      whyThisMatches: "Creativity requires divergent thinking, which is inhibited by over-caffeination. A complex, light-roast pour over provides the necessary alpha-wave boost while the delicate flavor profile keeps your brain engaged in 'discovery' mode rather than 'executive' mode. High acidity triggers neuro-sensory alertness without the heavy body of a latte.",
+      science: "Chlorogenic acids in light roasts act as mild MAO-B inhibitors, theoretically prolonging dopamine availability in the prefrontal cortex — the engine room of creative synthesis."
     }
   }
 };

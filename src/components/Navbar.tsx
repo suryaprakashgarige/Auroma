@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Coffee, Menu, X, ShoppingBag } from "lucide-react";
+import { Coffee, Menu, X, ShoppingBag, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,131 +12,162 @@ import { useUserStore } from "@/store/useUserStore";
 import { User } from "lucide-react";
 
 export default function Navbar({ onOpenQuiz }: { onOpenQuiz: () => void }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { items, toggleCart } = useCartStore();
   const { toggleAuthDrawer } = useUserStore();
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    // Navbar scroll effect
-    ScrollTrigger.create({
-      start: "top=-10",
-      end: "bottom=top",
-      onUpdate: (self) => {
-        const nav = document.getElementById("main-navbar");
-        if (self.direction === 1) { // Scrolling down
-          nav?.classList.add("bg-espresso/90", "backdrop-blur-md", "shadow-lg", "border-b", "border-cream/5");
-          nav?.classList.remove("bg-transparent");
-        } else if (self.direction === -1 && self.scroll() < 50) { // Scrolling up near top
-          nav?.classList.add("bg-transparent");
-          nav?.classList.remove("bg-espresso/90", "backdrop-blur-md", "shadow-lg", "border-b", "border-cream/5");
-        }
+    const checkScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
       }
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill());
     };
+
+    window.addEventListener("scroll", checkScroll);
+    return () => window.removeEventListener("scroll", checkScroll);
   }, []);
 
   return (
     <header 
-      id="main-navbar" 
-      className="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-transparent py-4 px-6 md:px-12 flex items-center justify-between"
+      className={`fixed top-0 left-0 w-full z-[100] transition-all duration-500 py-4 px-6 md:px-12 flex items-center justify-between ${
+        isScrolled 
+          ? "bg-espresso/70 backdrop-blur-xl border-b border-white/10 shadow-2xl py-3" 
+          : "bg-transparent py-6"
+      }`}
     >
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-2 text-2xl font-bold font-playfair tracking-wide text-cream">
-        <span>Auroma</span>
-        <Coffee className="w-5 h-5 text-caramel" />
+      <Link 
+        href="/" 
+        className="flex items-center gap-2 group"
+      >
+        <div className="relative">
+            <Coffee className="w-6 h-6 text-caramel group-hover:rotate-12 transition-transform" />
+            <motion.div 
+               animate={{ scale: [1, 1.2, 1], opacity: [0, 1, 0] }}
+               transition={{ duration: 2, repeat: Infinity }}
+               className="absolute -top-1 -right-1"
+            >
+                <Sparkles className="w-2 h-2 text-caramel/50" />
+            </motion.div>
+        </div>
+        <span className="text-2xl font-black font-playfair tracking-tighter text-cream uppercase">
+            Auroma
+        </span>
       </Link>
 
-      {/* Desktop Links */}
-      <nav className="hidden md:flex items-center gap-8 text-cream/90 font-dm-sans text-sm tracking-wide">
-        <Link href="#menu" className="hover:text-caramel transition-colors">Menu</Link>
-        <Link href="#features" className="hover:text-caramel transition-colors">Features</Link>
-        <Link href="#build-your-ritual" className="hover:text-caramel transition-colors">Build Your Ritual</Link>
-        <Link href="#mood-brew-scan" className="hover:text-caramel transition-colors">Mood Scan</Link>
+      {/* Desktop Navigation */}
+      <nav className="hidden lg:flex items-center gap-10">
+        {[
+          { name: "Menu", href: "#menu" },
+          { name: "Features", href: "#features" },
+          { name: "The Lab", href: "#mood-brew-scan" },
+          { name: "Craft", href: "#our-craft" }
+        ].map((link) => (
+          <Link 
+            key={link.name}
+            href={link.href}
+            className="text-[10px] font-black uppercase tracking-[0.2em] text-cream/60 hover:text-caramel transition-all"
+          >
+            {link.name}
+          </Link>
+        ))}
       </nav>
 
-      {/* Actions */}
-      <div className="hidden md:flex items-center gap-4">
-        {/* User Rewards Button */}
+      {/* Action Suite */}
+      <div className="flex items-center gap-3">
+        {/* Find My Coffee (Desktop) */}
         <button 
-          onClick={toggleAuthDrawer} 
-          className="p-2.5 bg-cream-dark border border-espresso/10 rounded-full hover:bg-cream-dark/90 transition shadow-sm cursor-pointer"
-        >
-          <User className="w-5 h-5 text-espresso" />
-        </button>
-
-        {/* Cart Button */}
-        <button 
-          onClick={toggleCart} 
-          className="p-2.5 relative bg-cream-dark border border-espresso/10 rounded-full hover:bg-cream-dark/90 transition shadow-sm cursor-pointer"
-        >
-          <ShoppingBag className="w-5 h-5 text-espresso" />
-          {itemCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-caramel text-espresso text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
-              {itemCount}
-            </span>
-          )}
-        </button>
-
-        {/* CTA Button */}
-        <button 
-          onClick={onOpenQuiz}
-          className="px-6 py-2.5 bg-caramel hover:bg-caramel/90 text-espresso font-semibold rounded-full text-sm font-dm-sans shadow-[0_0_10px_rgba(201,137,58,0.3)] hover:shadow-[0_0_20px_rgba(201,137,58,0.5)] transition-all duration-300 cursor-pointer"
+           onClick={onOpenQuiz}
+           className="hidden md:flex items-center gap-2 px-6 py-2.5 bg-caramel hover:bg-caramel/90 text-espresso font-black rounded-xl text-[10px] uppercase tracking-widest transition-all shadow-[0_10px_30px_rgba(212,168,83,0.3)] hover:translate-y-[-2px] active:scale-95"
         >
           Find My Coffee
         </button>
-      </div>
 
-      {/* Mobile Actions (Menu Toggle & Cart) */}
-      <div className="flex items-center gap-3 md:hidden">
+        {/* User Account */}
         <button 
-          onClick={toggleAuthDrawer} 
-          className="p-2 relative bg-cream-dark border border-espresso/10 rounded-full cursor-pointer"
+          onClick={toggleAuthDrawer}
+          className="w-10 h-10 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl text-cream hover:bg-white/10 transition-all"
         >
-          <User className="w-4 h-4 text-espresso" />
+          <User className="w-4 h-4" />
         </button>
 
+        {/* Cart Trigger */}
         <button 
-          onClick={toggleCart} 
-          className="p-2 relative bg-cream-dark border border-espresso/10 rounded-full cursor-pointer"
+          onClick={toggleCart}
+          className="group relative w-10 h-10 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl text-cream hover:bg-white/10 transition-all"
         >
-          <ShoppingBag className="w-4 h-4 text-espresso" />
-          {itemCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-caramel text-espresso text-[9px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center shadow-sm">
-              {itemCount}
-            </span>
-          )}
+          <ShoppingBag className="w-4 h-4 group-hover:scale-110 transition-transform" />
+          <AnimatePresence>
+            {itemCount > 0 && (
+              <motion.span 
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                className="absolute -top-1.5 -right-1.5 bg-caramel text-espresso text-[9px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center shadow-lg border-2 border-espresso"
+              >
+                {itemCount}
+              </motion.span>
+            )}
+          </AnimatePresence>
         </button>
-        <button className="text-cream" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+
+        {/* Mobile Menu Toggle */}
+        <button 
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="lg:hidden w-10 h-10 flex items-center justify-center bg-caramel rounded-xl text-espresso shadow-lg"
+        >
+          {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
       {/* Mobile Drawer */}
       <AnimatePresence>
-        {isOpen && (
+        {isMobileMenuOpen && (
           <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-16 left-0 w-full bg-espresso/95 backdrop-blur-md border-b border-cream/10 p-6 flex flex-col gap-5 md:hidden text-cream font-dm-sans font-medium z-40"
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            className="fixed inset-0 z-[90] bg-espresso flex flex-col pt-24 px-8 md:hidden"
           >
-            <Link href="#menu" onClick={() => setIsOpen(false)} className="hover:text-caramel">Menu</Link>
-            <Link href="#features" onClick={() => setIsOpen(false)} className="hover:text-caramel">Features</Link>
-            <Link href="#build-your-ritual" onClick={() => setIsOpen(false)} className="hover:text-caramel">Build Your Ritual</Link>
-            <Link href="#mood-brew-scan" onClick={() => setIsOpen(false)} className="hover:text-caramel">Mood Scan</Link>
+            <div className="flex flex-col gap-8">
+              {[
+                { name: "Digital Menu", href: "#menu" },
+                { name: "Coffee Features", href: "#features" },
+                { name: "Build Your Ritual", href: "#build-your-ritual" },
+                { name: "Mood Scan", href: "#mood-brew-scan" }
+              ].map((link, i) => (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  key={link.name}
+                >
+                  <Link 
+                    href={link.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-4xl font-black font-playfair text-cream uppercase hover:text-caramel transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
 
-            <button 
-              onClick={() => { onOpenQuiz(); setIsOpen(false); }}
-              className="w-full mt-2 px-6 py-2.5 bg-caramel text-espresso font-semibold rounded-full shadow-[0_0_10px_rgba(201,137,58,0.3)] cursor-pointer"
-            >
-              Find My Coffee
-            </button>
+            <div className="mt-auto pb-12">
+               <button 
+                 onClick={() => { onOpenQuiz(); setIsMobileMenuOpen(false); }}
+                 className="w-full py-5 bg-caramel text-espresso font-black rounded-2xl flex items-center justify-center gap-3 text-lg"
+               >
+                 Find My Coffee
+                 <Sparkles className="w-5 h-5" />
+               </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

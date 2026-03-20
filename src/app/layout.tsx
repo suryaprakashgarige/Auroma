@@ -33,12 +33,26 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${playfair.variable} ${dmSans.variable} ${caveat.variable} antialiased`}
+        className={`${playfair.variable} ${dmSans.variable} ${caveat.variable} antialiased relative`}
       >
         <CursorGlow />
         <LenisProvider>
           {children}
         </LenisProvider>
+
+        {/* Floating Demo Badge */}
+        <div 
+          className="fixed bottom-6 left-6 z-[9999] px-[14px] py-[6px] rounded-[20px] shadow-2xl backdrop-blur-md pointer-events-none select-none border border-white/10"
+          style={{ 
+            background: 'rgba(0,0,0,0.75)', 
+            color: '#D4A853',
+            fontSize: '11px',
+            fontWeight: 'bold',
+            letterSpacing: '0.05em'
+          }}
+        >
+          ☕ Demo Site — Your brand replaces everything
+        </div>
       </body>
     </html>
   );

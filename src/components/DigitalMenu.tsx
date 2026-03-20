@@ -1,23 +1,79 @@
 "use client";
+import { useEffect, useRef } from "react";
 import { menuItems } from "@/lib/mockData";
 import { useCartStore } from "@/store/useCartStore";
 import { Plus } from "lucide-react";
 import Image from "next/image";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
 export default function DigitalMenu() {
   const addItem = useCartStore((state) => state.addItem);
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    
+    const section = sectionRef.current;
+    const header = headerRef.current;
+    const items = itemsRef.current.filter(Boolean);
+
+    if (!section || !header || items.length === 0) return;
+
+    // Header animation
+    gsap.fromTo(header, 
+      { opacity: 0, y: 30 },
+      {
+        opacity: 1, 
+        y: 0, 
+        duration: 1, 
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: header,
+          start: "top 85%",
+        }
+      }
+    );
+
+    // Items stagger animation
+    gsap.fromTo(items,
+      { opacity: 0, y: 50, scale: 0.95 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: section,
+          start: "top 75%",
+        }
+      }
+    );
+
+    return () => {
+      ScrollTrigger.getAll().forEach(t => t.kill());
+    };
+  }, []);
 
   return (
-    <section id="menu" className="w-full py-24 bg-cream px-6 md:px-12">
+    <section ref={sectionRef} id="menu" className="w-full py-24 bg-cream px-6 md:px-12 overflow-hidden">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
+        <div ref={headerRef} className="text-center mb-16">
           <span className="font-caveat text-2xl text-caramel italic">Freshly crafted</span>
           <h2 className="text-4xl md:text-5xl font-bold font-playfair text-espresso mt-2">Our Menu</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {menuItems.map((item) => (
-            <div key={item.id} className="group cursor-pointer flex flex-col h-full bg-cream-dark rounded-2xl overflow-hidden border border-espresso/5 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          {menuItems.map((item, index) => (
+            <div 
+              key={item.id} 
+              ref={el => { itemsRef.current[index] = el; }}
+              className="group cursor-pointer flex flex-col h-full bg-cream-dark rounded-2xl overflow-hidden border border-espresso/5 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            >
               <div className="relative h-64 overflow-hidden">
                 <Image 
                   src={item.imageUrl} 
