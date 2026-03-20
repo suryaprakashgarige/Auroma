@@ -20,7 +20,7 @@ export default function AdminDashboard() {
       setIsAuthenticated(true);
       setError("");
     } else {
-      setError("Incorrect PIN. Try 1234 for Demo.");
+      setError("Incorrect PIN. Please try again.");
       setPin("");
     }
   };

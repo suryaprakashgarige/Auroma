@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useCartStore } from "@/store/useCartStore";
 import { X, Minus, Plus, ShoppingBag, CreditCard, CheckCircle2, Ticket } from "lucide-react";
 import Image from "next/image";
@@ -89,6 +90,13 @@ export default function CartDrawer() {
                       Your high-frequency brew is being calibrated. Check the tracker for real-time extraction updates.
                     </p>
                   </div>
+                  <Link
+                    href="/tracker"
+                    onClick={closeAndReset}
+                    className="w-full mt-4 py-4 bg-caramel hover:bg-caramel/90 text-espresso font-black rounded-2xl flex items-center justify-center gap-2 text-sm uppercase tracking-widest transition-all"
+                  >
+                    Track Your Order →
+                  </Link>
                   <button 
                     onClick={closeAndReset}
                     className="px-10 py-4 bg-espresso text-cream font-bold rounded-2xl hover:translate-y-[-2px] transition-all shadow-xl"
